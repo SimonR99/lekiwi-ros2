@@ -1,0 +1,39 @@
+# IDE and Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Build outputs
+build/
+bin/
+obj/
+*.o
+*.d
+*.elf
+*.bin
+*.hex
+*.map
+
+# Debug files
+*.dSYM/
+debug/
+*.debug
+
+# Dependencies
+lib/
+vendor/
+
+# Generated files
+*.generated.*
+*.log
+
+# OS specific files
+.DS_Store
+Thumbs.db
+
+# Project specific
+*.bak
+*.tmp
+core

@@ -1,0 +1,7 @@
+lekiwi_hardware:
+  ros__parameters:
+    use_serial: true
+    serial_port: "/dev/ttyACM0"
+    serial_baudrate: 1000000
+    calibration_file: "$(find lekiwi_hardware)/config/calibration.yaml"
+    joint_offsets_file: "$(find lekiwi_hardware)/config/joint_offsets.yaml"

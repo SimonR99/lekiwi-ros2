@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<library path="lekiwi_hardware">
+    <class name="lekiwi_controller/LeKiwiInterface" type="lekiwi_controller::LeKiwiInterface"
+        base_class_type="hardware_interface::SystemInterface">
+        <description>LeKiwi Hardware Interface</description>
+    </class>
+</library>

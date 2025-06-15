@@ -1,0 +1,25 @@
+# MoveIt uses this configuration for controller management
+
+moveit_controller_manager: moveit_simple_controller_manager/MoveItSimpleControllerManager
+
+moveit_simple_controller_manager:
+  controller_names:
+    - lekiwi_controller
+    - lekiwi_gripper_controller
+
+  lekiwi_controller:
+    type: FollowJointTrajectory
+    joints:
+      - Shoulder_Rotation
+      - Shoulder_Pitch
+      - Elbow
+      - Wrist_Pitch
+      - Wrist_Roll
+    action_ns: follow_joint_trajectory
+    default: true
+  lekiwi_gripper_controller:
+    type: FollowJointTrajectory
+    joints:
+      - Gripper
+    action_ns: follow_joint_trajectory
+    default: true
