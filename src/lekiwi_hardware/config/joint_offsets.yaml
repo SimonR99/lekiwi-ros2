@@ -6,7 +6,7 @@ joint_offsets:
   # Base zero position for all servos (center position)
   zero_position_base: 2048
 
-  # Joint-specific angle offsets in degrees
+  # ARM JOINT-SPECIFIC ANGLE OFFSETS IN DEGREES
   # Positive values rotate in the positive direction
   shoulder_rotation:
     angle_offset_deg: 0.0 # (-2 + 33) degrees
@@ -25,3 +25,14 @@ joint_offsets:
 
   gripper:
     angle_offset_deg: 0.0 # No offset for gripper
+
+  # WHEEL JOINT-SPECIFIC ANGLE OFFSETS IN DEGREES
+  # Wheels typically don't need offset adjustments
+  left_wheel_drive:
+    angle_offset_deg: 0.0
+
+  rear_wheel_drive:
+    angle_offset_deg: 0.0
+
+  right_wheel_drive:
+    angle_offset_deg: 0.0

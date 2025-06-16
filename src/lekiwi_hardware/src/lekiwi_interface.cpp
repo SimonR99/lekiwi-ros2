@@ -81,6 +81,8 @@ CallbackReturn LeKiwiInterface::on_init(const hardware_interface::HardwareInfo& 
   position_commands_.resize(num_joints, 0.0);
   position_states_.resize(num_joints, 0.0);
 
+  RCLCPP_INFO(rclcpp::get_logger("LeKiwiInterface"), "Initialized hardware interface with %zu joints", num_joints);
+
   return CallbackReturn::SUCCESS;
 }
 
@@ -190,18 +192,39 @@ hardware_interface::return_type LeKiwiInterface::write(const rclcpp::Time& time,
     for (size_t i = 0; i < info_.joints.size(); ++i)
     {
       uint8_t servo_id = static_cast<uint8_t>(i + 1);
-      // Convert from radians (-π to π) to servo ticks (0-4095)
-      int joint_pos_cmd = radians_to_ticks(position_commands_[i], i);
 
-      RCLCPP_DEBUG(rclcpp::get_logger("LeKiwiInterface"), "Servo %d command: %.2f rad -> %d ticks", servo_id,
-                   position_commands_[i], joint_pos_cmd);
-
-      // Reduced speed from 4500 to 2000 for smoother motion
-      if (!st3215_.RegWritePosEx(servo_id, joint_pos_cmd, 2000, 255))
+      // Differentiate between ARM joints (IDs 1-6) and WHEEL joints (IDs 7-9)
+      if (servo_id <= 6)
       {
-        RCLCPP_WARN(rclcpp::get_logger("LeKiwiInterface"), "Failed to write position to servo %d", servo_id);
+        // ARM JOINTS: Use position control
+        int joint_pos_cmd = radians_to_ticks(position_commands_[i], i);
+
+        RCLCPP_DEBUG(rclcpp::get_logger("LeKiwiInterface"), "ARM Servo %d command: %.2f rad -> %d ticks", servo_id,
+                     position_commands_[i], joint_pos_cmd);
+
+        // Reduced speed from 4500 to 2000 for smoother motion
+        if (!st3215_.RegWritePosEx(servo_id, joint_pos_cmd, 2000, 255))
+        {
+          RCLCPP_WARN(rclcpp::get_logger("LeKiwiInterface"), "Failed to write position to arm servo %d", servo_id);
+        }
+      }
+      else
+      {
+        // WHEEL JOINTS: Use velocity control - for now, keep them at 0 velocity
+        // Later we'll implement cmd_vel support here
+        int16_t wheel_speed = 0;  // 0 velocity = stopped
+
+        RCLCPP_DEBUG(rclcpp::get_logger("LeKiwiInterface"), "WHEEL Servo %d command: speed %d", servo_id, wheel_speed);
+
+        // Use WriteSpe() for velocity control instead of RegWritePosEx()
+        if (!st3215_.WriteSpe(servo_id, wheel_speed, 50))
+        {
+          RCLCPP_WARN(rclcpp::get_logger("LeKiwiInterface"), "Failed to write speed to wheel servo %d", servo_id);
+        }
       }
     }
+
+    // Only call RegWriteAction for arm joints that use RegWritePosEx
     st3215_.RegWriteAction();
   }
 
@@ -306,21 +329,24 @@ void LeKiwiInterface::calibrate_servo(uint8_t servo_id, int current_pos)
 
 double LeKiwiInterface::ticks_to_radians(int ticks, size_t servo_idx)
 {
-  if (servo_idx >= zero_positions_.size())
+  if (servo_idx >= zero_positions_.size() || servo_idx >= servo_directions_.size())
   {
     return 0.0;
   }
 
   // Convert servo ticks to radians using configured zero position
-  // NOTE: No direction multiplier here - we read the actual servo position
   int zero_pos = zero_positions_[servo_idx];
   double angle_ticks = static_cast<double>(ticks - zero_pos);
+
+  // Apply servo direction multiplier (especially important for wheels)
+  angle_ticks *= servo_directions_[servo_idx];
+
   return (angle_ticks / 4096.0) * 2.0 * M_PI;  // 4096 ticks = 360 degrees = 2π radians
 }
 
 int LeKiwiInterface::radians_to_ticks(double radians, size_t servo_idx)
 {
-  if (servo_idx >= zero_positions_.size())
+  if (servo_idx >= zero_positions_.size() || servo_idx >= servo_directions_.size())
   {
     return 2048;  // Default center
   }
@@ -328,6 +354,10 @@ int LeKiwiInterface::radians_to_ticks(double radians, size_t servo_idx)
   // Convert radians to servo ticks using configured zero position
   int zero_pos = zero_positions_[servo_idx];
   double angle_ticks = (radians / (2.0 * M_PI)) * 4096.0;  // Convert to ticks
+
+  // Apply servo direction multiplier (especially important for wheels)
+  angle_ticks *= servo_directions_[servo_idx];
+
   return zero_pos + static_cast<int>(angle_ticks);
 }
 
@@ -514,9 +544,10 @@ bool LeKiwiInterface::load_joint_offsets(const std::string& filepath)
     // Get base zero position
     int zero_base = joint_offsets["zero_position_base"] ? joint_offsets["zero_position_base"].as<int>() : 2048;
 
-    // Load joint-specific offsets
-    std::vector<std::string> joint_names = { "shoulder_rotation", "shoulder_pitch", "elbow",
-                                             "wrist_pitch",       "wrist_roll",     "gripper" };
+    // Load joint-specific offsets for ARM joints and WHEEL joints
+    std::vector<std::string> joint_names = { "shoulder_rotation", "shoulder_pitch",   "elbow",
+                                             "wrist_pitch",       "wrist_roll",       "gripper",
+                                             "left_wheel_drive",  "rear_wheel_drive", "right_wheel_drive" };
 
     for (const auto& joint_name : joint_names)
     {
@@ -546,9 +577,11 @@ bool LeKiwiInterface::load_joint_offsets(const std::string& filepath)
 
 void LeKiwiInterface::calculate_zero_positions()
 {
-  // Joint names in order they appear in the servo array
-  std::vector<std::string> joint_names = { "shoulder_rotation", "shoulder_pitch", "elbow",
-                                           "wrist_pitch",       "wrist_roll",     "gripper" };
+  // Joint names in order they appear in the servo array (Motor IDs 1-9)
+  // ARM joints: 1-6, WHEEL joints: 7-9
+  std::vector<std::string> joint_names = { "shoulder_rotation", "shoulder_pitch",   "elbow",
+                                           "wrist_pitch",       "wrist_roll",       "gripper",
+                                           "left_wheel_drive",  "rear_wheel_drive", "right_wheel_drive" };
 
   zero_positions_.clear();
   zero_positions_.reserve(joint_names.size());

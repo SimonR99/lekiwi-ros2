@@ -1,9 +1,16 @@
 # Default initial positions for LeKiwi's ros2_control fake system
 
 initial_positions:
-  Elbow: 0
-  Gripper: 0
-  Shoulder_Pitch: 0
+  # ARM JOINTS (Motor IDs 1-6)
   Shoulder_Rotation: 0
+  Shoulder_Pitch: 0
+  Elbow: 0
   Wrist_Pitch: 0
   Wrist_Roll: 0
+  Gripper: 0
+
+  # WHEEL JOINTS (Motor IDs 7-9) - These values are not used since wheels use velocity control
+  # But we keep them for ros2_control compatibility
+  left_wheel_drive: 0.0
+  rear_wheel_drive: 0.0
+  right_wheel_drive: 0.0
