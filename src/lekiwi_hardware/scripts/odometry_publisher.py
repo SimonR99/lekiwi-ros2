@@ -77,6 +77,14 @@ class OdometryPublisher(Node):
         self.get_logger().info(f"Publishing TF: {self.publish_tf}")
         self.get_logger().info(f"Frames: {self.odom_frame_id} -> {self.base_frame_id}")
         
+        # Publish initial transform and odometry immediately
+        self.publish_odometry(time.time())
+        if self.publish_tf:
+            self.publish_transform(time.time())
+            
+        # Create a timer to continuously publish TF and odometry even when robot is not moving
+        self.timer = self.create_timer(0.1, self.publish_static_tf_callback)  # 10Hz
+        
     def joint_state_callback(self, msg):
         """Process joint states and extract wheel velocities"""
         try:
@@ -224,6 +232,17 @@ class OdometryPublisher(Node):
         
         # Broadcast
         self.tf_broadcaster.sendTransform(t)
+    
+    def publish_static_tf_callback(self):
+        """Timer callback to continuously publish TF and odometry even when stationary"""
+        current_time = time.time()
+        
+        # Always publish current odometry
+        self.publish_odometry(current_time)
+        
+        # Always publish TF transform
+        if self.publish_tf:
+            self.publish_transform(current_time)
 
 def main():
     rclpy.init()

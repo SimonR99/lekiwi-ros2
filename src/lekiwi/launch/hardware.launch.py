@@ -135,7 +135,7 @@ def generate_launch_description():
             'wheel_radius': 0.05,      # 5cm wheel radius (must match holonomic controller)
             'base_radius': 0.125,      # 12.5cm from center to wheel (must match)
             'odom_frame_id': 'odom',   # odometry frame name
-            'base_frame_id': 'base_footprint', # robot base frame name (aligned coordinate system)
+            'base_frame_id': 'base_footprint', # robot base frame name (aligned with nav2 config)
             'publish_tf': True,        # publish odom->base_footprint transform
         }],
         output='screen',

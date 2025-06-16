@@ -36,12 +36,12 @@ def generate_launch_description():
         parameters=[robot_description]
     )
 
-    # Joint State Publisher (for testing joint movement)
-    joint_state_publisher_node = Node(
-        package='joint_state_publisher_gui',
-        executable='joint_state_publisher_gui',
-        output='screen',
-    )
+    # # Joint State Publisher (for testing joint movement)
+    # joint_state_publisher_node = Node(
+    #     package='joint_state_publisher_gui',
+    #     executable='joint_state_publisher_gui',
+    #     output='screen',
+    # )
 
     # RViz
     rviz_node = Node(
@@ -54,6 +54,6 @@ def generate_launch_description():
     return LaunchDescription([
         urdf_file_arg,
         robot_state_pub_node,
-        joint_state_publisher_node,
+        # joint_state_publisher_node,
         rviz_node
     ]) 

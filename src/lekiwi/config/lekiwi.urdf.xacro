@@ -3,8 +3,8 @@
     <xacro:arg name="initial_positions_file" default="initial_positions.yaml" />
     <xacro:arg name="use_fake_hardware" default="false" />
 
-    <!-- Import lekiwi urdf file -->
-    <xacro:include filename="$(find lekiwi)/urdf/lekiwi_complete.urdf" />
+    <!-- Import lekiwi mobile base urdf file (includes proper base frame connections) -->
+    <xacro:include filename="$(find lekiwi)/urdf/lekiwi_mobile_base.urdf" />
 
     <!-- Import control_xacro -->
     <xacro:include filename="lekiwi.ros2_control.xacro" />
@@ -15,8 +15,8 @@
 
     <joint name="base_footprint_joint" type="fixed">
         <parent link="base_footprint" />
-        <child link="base_link" />
-        <!-- Rotate 90° counterclockwise around Z-axis to align coordinate frames -->
+        <child link="mobile_base_link" />
+        <!-- Apply 90-degree rotation to align coordinate frames: X=forward, Y=left -->
         <origin xyz="0 0 0" rpy="0 0 -1.5708" />
     </joint>
 

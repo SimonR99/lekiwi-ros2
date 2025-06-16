@@ -8,6 +8,7 @@ Panels:
         - /Status1
         - /RobotModel1/Description Topic1
         - /TF1/Frames1
+        - /Odometry1
       Splitter Ratio: 0.6705882549285889
     Tree Height: 746
   - Class: rviz_common/Selection
@@ -62,8 +63,82 @@ Visualization Manager:
         Value: /robot_description
       Enabled: true
       Links:
+        4-Omni-Directional-Wheel_Single_Body-v1:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        4-Omni-Directional-Wheel_Single_Body-v1-1:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        4-Omni-Directional-Wheel_Single_Body-v1-2:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        94868A713_NO-THREADS_Female-Threaded-Hex-Standoff:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        94868A713_NO-THREADS_Female-Threaded-Hex-Standoff-1:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        94868A713_NO-THREADS_Female-Threaded-Hex-Standoff-2:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        94868A713_NO-THREADS_Female-Threaded-Hex-Standoff-3:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        94868A713_NO-THREADS_Female-Threaded-Hex-Standoff-4:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        94868A713_NO-THREADS_Female-Threaded-Hex-Standoff-5:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
         All Links Enabled: true
         Base:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        Base_08q-v1:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        Battery---Battery-5.2-Ah-DC5521-Plug-v2:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        Bottom-V2-v3:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        Camera-Model-v3:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        Camera-Model-v3-1:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        Camera-Mount-v8:
           Alpha: 1
           Show Axes: false
           Show Trail: false
@@ -71,8 +146,99 @@ Visualization Manager:
         Expand Joint Details: false
         Expand Link Details: false
         Expand Tree: false
+        Fixed_Gripper:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
         Link Tree Style: Links in Alphabetic Order
+        Lower_Arm:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        Moving_Jaw:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        Moving_Jaw_08d-v1:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        Passive_Horn_01-v1:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        Rotation_Pitch_08i-v1:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        SO_ARM100_08k_116_Square-v1:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        SO_ARM100_08k_Asym_Mirror_Clip-v1:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        SO_ARM100_08k_Mirror-v1:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        ST3215_Servo_Motor-v1:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        ST3215_Servo_Motor-v1-1:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        ST3215_Servo_Motor-v1-2:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        STS3215_03a-v1:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        STS3215_03a-v1-1:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        STS3215_03a-v1-2:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        STS3215_03a-v1-3:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        STS3215_03a-v1-4:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        STS3215_03a_Wrist_Roll-v1:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
         Shoulder_Rotation_Pitch:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        Top-V2-v2:
           Alpha: 1
           Show Axes: false
           Show Trail: false
@@ -81,77 +247,76 @@ Visualization Manager:
           Alpha: 1
           Show Axes: false
           Show Trail: false
+        WaveShare_Mounting_Plate_01d-v1:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        Wrist-Camera-Mount-v11:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        Wrist_Pitch_Roll:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        Wrist_Roll_08c-v1:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        Wrist_Roll_Pitch_08i-v1:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
           Value: true
         base_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
-        end_effector:
+          Value: true
+        base_plate_layer2-v3:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        left_drive_motor_mount:
+        drive_motor_mount-v11:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        left_servo_motor:
+        drive_motor_mount-v11-1:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        left_wheel:
+        drive_motor_mount-v11-2:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        left_wheel_mount:
+        lipo_battery_mount-v3:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        mobile_base_link:
+        omni_wheel_mount-v5:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        rear_drive_motor_mount:
+        omni_wheel_mount-v5-1:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        rear_servo_motor:
+        omni_wheel_mount-v5-2:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        rear_wheel:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        rear_wheel_mount:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        right_drive_motor_mount:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        right_servo_motor:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        right_wheel:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        right_wheel_mount:
+        servo_controller_mount-v3:
           Alpha: 1
           Show Axes: false
           Show Trail: false
@@ -178,10 +343,77 @@ Visualization Manager:
         {}
       Update Interval: 0
       Value: false
+    - Alpha: 1
+      Buffer Length: 1
+      Class: rviz_default_plugins/Path
+      Color: 25; 255; 0
+      Enabled: true
+      Head Diameter: 0.30000001192092896
+      Head Length: 0.20000000298023224
+      Length: 0.30000001192092896
+      Line Style: Lines
+      Line Width: 0.029999999329447746
+      Name: Path
+      Offset:
+        X: 0
+        Y: 0
+        Z: 0
+      Pose Color: 255; 85; 255
+      Pose Style: None
+      Radius: 0.029999999329447746
+      Shaft Diameter: 0.10000000149011612
+      Shaft Length: 0.10000000149011612
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        Filter size: 10
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /plan
+      Value: true
+    - Angle Tolerance: 0.10000000149011612
+      Class: rviz_default_plugins/Odometry
+      Covariance:
+        Orientation:
+          Alpha: 0.5
+          Color: 255; 255; 127
+          Color Style: Unique
+          Frame: Local
+          Offset: 1
+          Scale: 1
+          Value: true
+        Position:
+          Alpha: 0.30000001192092896
+          Color: 204; 51; 204
+          Scale: 1
+          Value: true
+        Value: true
+      Enabled: true
+      Keep: 1
+      Name: Odometry
+      Position Tolerance: 0.10000000149011612
+      Shape:
+        Alpha: 1
+        Axes Length: 1
+        Axes Radius: 0.10000000149011612
+        Color: 255; 25; 0
+        Head Length: 0.30000001192092896
+        Head Radius: 0.10000000149011612
+        Shaft Length: 1
+        Shaft Radius: 0.05000000074505806
+        Value: Arrow
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        Filter size: 10
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /odom
+      Value: true
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
-    Fixed Frame: base_link
+    Fixed Frame: odom
     Frame Rate: 30
   Name: root
   Tools:
@@ -224,25 +456,25 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz_default_plugins/Orbit
-      Distance: 0.9008394479751587
+      Distance: 2.0358383655548096
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: -0.011293001472949982
-        Y: -0.014954125508666039
-        Z: 0.12376135587692261
+        X: -0.008646595291793346
+        Y: -0.019462885335087776
+        Z: 0.18997348845005035
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.04479655995965004
+      Pitch: 1.1497963666915894
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 3.0686216354370117
+      Yaw: 1.9686219692230225
     Saved: ~
 Window Geometry:
   Displays:
