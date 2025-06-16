@@ -53,6 +53,10 @@ private:
   std::vector<double> position_commands_;
   std::vector<double> position_states_;
 
+  // Velocity command and state storage for wheels
+  std::vector<double> velocity_commands_;
+  std::vector<double> velocity_states_;
+
   // Configurable zero positions and offsets
   struct JointOffsetConfig
   {
@@ -61,8 +65,8 @@ private:
   };
 
   std::map<std::string, JointOffsetConfig> joint_offset_config_;
-  std::vector<int> zero_positions_;                                    // Calculated from config
-  std::vector<int> servo_directions_{ 1, 1, 1, 1, 1, 1, -1, -1, -1 };  // Direction multipliers: arm normal, wheels
+  std::vector<int> zero_positions_;                                 // Calculated from config
+  std::vector<int> servo_directions_{ 1, 1, 1, 1, 1, 1, 1, 1, 1 };  // Direction multipliers: arm normal, wheels
                                                                        // flipped Motor IDs: 1-6 (arm, normal), 7-9
                                                                        // (wheels, flipped)
 

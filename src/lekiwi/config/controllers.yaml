@@ -11,6 +11,10 @@ controller_manager:
     lekiwi_gripper_controller:
       type: joint_trajectory_controller/JointTrajectoryController
 
+    # Add individual wheel controllers (velocity control)
+    lekiwi_wheel_controller:
+      type: velocity_controllers/JointGroupVelocityController
+
 lekiwi_controller:
   ros__parameters:
     joints:
@@ -59,3 +63,11 @@ lekiwi_gripper_controller:
     constraints:
       stopped_velocity_tolerance: 0.01
       goal_time: 0.0
+
+# New wheel controller configuration (velocity control)
+lekiwi_wheel_controller:
+  ros__parameters:
+    joints:
+      - left_wheel_drive
+      - rear_wheel_drive
+      - right_wheel_drive

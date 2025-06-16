@@ -80,6 +80,8 @@ CallbackReturn LeKiwiInterface::on_init(const hardware_interface::HardwareInfo& 
   size_t num_joints = info_.joints.size();
   position_commands_.resize(num_joints, 0.0);
   position_states_.resize(num_joints, 0.0);
+  velocity_commands_.resize(num_joints, 0.0);
+  velocity_states_.resize(num_joints, 0.0);
 
   RCLCPP_INFO(rclcpp::get_logger("LeKiwiInterface"), "Initialized hardware interface with %zu joints", num_joints);
 
@@ -91,7 +93,16 @@ std::vector<hardware_interface::StateInterface> LeKiwiInterface::export_state_in
   std::vector<hardware_interface::StateInterface> state_interfaces;
   for (size_t i = 0; i < info_.joints.size(); i++)
   {
-    state_interfaces.emplace_back(info_.joints[i].name, hardware_interface::HW_IF_POSITION, &position_states_[i]);
+    const std::string& joint_name = info_.joints[i].name;
+
+    // All joints provide position state
+    state_interfaces.emplace_back(joint_name, hardware_interface::HW_IF_POSITION, &position_states_[i]);
+
+    // Wheel joints also provide velocity state
+    if (joint_name.find("wheel") != std::string::npos)
+    {
+      state_interfaces.emplace_back(joint_name, hardware_interface::HW_IF_VELOCITY, &velocity_states_[i]);
+    }
   }
   return state_interfaces;
 }
@@ -101,8 +112,18 @@ std::vector<hardware_interface::CommandInterface> LeKiwiInterface::export_comman
   std::vector<hardware_interface::CommandInterface> command_interfaces;
   for (size_t i = 0; i < info_.joints.size(); i++)
   {
-    command_interfaces.emplace_back(hardware_interface::CommandInterface(
-        info_.joints[i].name, hardware_interface::HW_IF_POSITION, &position_commands_[i]));
+    const std::string& joint_name = info_.joints[i].name;
+
+    // Arm joints use position control
+    if (joint_name.find("wheel") == std::string::npos)
+    {
+      command_interfaces.emplace_back(joint_name, hardware_interface::HW_IF_POSITION, &position_commands_[i]);
+    }
+    // Wheel joints use velocity control
+    else
+    {
+      command_interfaces.emplace_back(joint_name, hardware_interface::HW_IF_VELOCITY, &velocity_commands_[i]);
+    }
   }
   return command_interfaces;
 }
@@ -210,16 +231,27 @@ hardware_interface::return_type LeKiwiInterface::write(const rclcpp::Time& time,
       }
       else
       {
-        // WHEEL JOINTS: Use velocity control - for now, keep them at 0 velocity
-        // Later we'll implement cmd_vel support here
-        int16_t wheel_speed = 0;  // 0 velocity = stopped
+        // WHEEL JOINTS: Use velocity control
+        // Convert rad/s to servo speed units
+        double velocity_rad_s = velocity_commands_[i];
 
-        RCLCPP_DEBUG(rclcpp::get_logger("LeKiwiInterface"), "WHEEL Servo %d command: speed %d", servo_id, wheel_speed);
+        // Convert radians/sec to degrees/sec, then to servo raw units
+        // Servo speed: 4096 ticks = 360 degrees, so steps_per_deg = 4096/360
+        double velocity_deg_s = velocity_rad_s * (180.0 / M_PI);
+        double steps_per_deg = 4096.0 / 360.0;
+        int16_t wheel_speed = static_cast<int16_t>(velocity_deg_s * steps_per_deg);
 
-        // Use WriteSpe() for velocity control instead of RegWritePosEx()
+        // Apply direction multiplier
+        wheel_speed *= servo_directions_[i];
+
+        RCLCPP_DEBUG(rclcpp::get_logger("LeKiwiInterface"),
+                     "WHEEL Servo %d velocity: %.3f rad/s -> %.1f deg/s -> %d raw", servo_id, velocity_rad_s,
+                     velocity_deg_s, wheel_speed);
+
+        // Use velocity control for wheels
         if (!st3215_.WriteSpe(servo_id, wheel_speed, 50))
         {
-          RCLCPP_WARN(rclcpp::get_logger("LeKiwiInterface"), "Failed to write speed to wheel servo %d", servo_id);
+          RCLCPP_WARN(rclcpp::get_logger("LeKiwiInterface"), "Failed to write velocity to wheel servo %d", servo_id);
         }
       }
     }
@@ -237,6 +269,7 @@ hardware_interface::return_type LeKiwiInterface::write(const rclcpp::Time& time,
     {
       cmd_msg.name.push_back(info_.joints[i].name);
       cmd_msg.position.push_back(position_commands_[i]);
+      cmd_msg.velocity.push_back(velocity_commands_[i]);  // Add velocity commands
     }
 
     command_publisher_->publish(cmd_msg);
@@ -273,7 +306,11 @@ hardware_interface::return_type LeKiwiInterface::read(const rclcpp::Time& time, 
         int raw_pos = st3215_.ReadPos(servo_id);
         position_states_[i] = ticks_to_radians(raw_pos, i);
 
-        double speed = -1 * st3215_.ReadSpeed(servo_id) * 2 * M_PI / 4096.0;
+        // Read velocity feedback and convert to rad/s
+        int raw_speed = st3215_.ReadSpeed(servo_id);
+        double speed_deg_s = raw_speed * (360.0 / 4096.0);                          // Convert raw to deg/s
+        velocity_states_[i] = speed_deg_s * (M_PI / 180.0) * servo_directions_[i];  // Convert to rad/s with direction
+
         double pwm = -1 * st3215_.ReadLoad(servo_id) / 10.0;
         int move = st3215_.ReadMove(servo_id);
         double temperature = st3215_.ReadTemper(servo_id);
@@ -281,8 +318,8 @@ hardware_interface::return_type LeKiwiInterface::read(const rclcpp::Time& time, 
         double current = st3215_.ReadCurrent(servo_id) * 6.5 / 1000;
 
         RCLCPP_DEBUG(rclcpp::get_logger("LeKiwiInterface"),
-                     "Servo %d: raw_pos=%d (%.2f rad) speed=%.2f pwm=%.2f temp=%.1f V=%.1f I=%.3f", servo_id, raw_pos,
-                     position_states_[i], speed, pwm, temperature, voltage, current);
+                     "Servo %d: pos=%.2f rad, vel=%.3f rad/s, pwm=%.2f, temp=%.1f°C, V=%.1f, I=%.3f", servo_id,
+                     position_states_[i], velocity_states_[i], pwm, temperature, voltage, current);
       }
       else
       {

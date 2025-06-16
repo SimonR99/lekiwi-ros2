@@ -78,6 +78,14 @@ def generate_launch_description():
         output="screen",
     )
 
+    # Add wheel controller spawner
+    wheel_controller_spawner = Node(
+        package="controller_manager",
+        executable="spawner",
+        arguments=["lekiwi_wheel_controller", "-c", "/controller_manager"],
+        output="screen",
+    )
+
     # Delay loading and starting robot_controller after joint_state_broadcaster
     delay_robot_controller_spawner_after_joint_state_broadcaster_spawner = RegisterEventHandler(
         event_handler=OnProcessExit(
@@ -103,12 +111,45 @@ def generate_launch_description():
         name='zero_pose_test',
     )
 
+    # Add holonomic controller node with safety parameters
+    holonomic_controller_node = Node(
+        package='lekiwi_hardware',
+        executable='holonomic_controller.py',
+        name='holonomic_controller',
+        parameters=[{
+            'wheel_radius': 0.05,      # 5cm wheel radius (adjust as needed)
+            'base_radius': 0.125,      # 12.5cm from center to wheel (adjust as needed)
+            'max_wheel_velocity': 3.0, # max rad/s per wheel (adjust as needed)
+            'cmd_timeout': 0.2,        # safety timeout in seconds
+            'safety_check_rate': 10.0, # safety check frequency in Hz
+        }],
+        output='screen',
+    )
+
+    # Add odometry publisher node
+    odometry_publisher_node = Node(
+        package='lekiwi_hardware',
+        executable='odometry_publisher.py',
+        name='odometry_publisher',
+        parameters=[{
+            'wheel_radius': 0.05,      # 5cm wheel radius (must match holonomic controller)
+            'base_radius': 0.125,      # 12.5cm from center to wheel (must match)
+            'odom_frame_id': 'odom',   # odometry frame name
+            'base_frame_id': 'base_footprint', # robot base frame name (aligned coordinate system)
+            'publish_tf': True,        # publish odom->base_footprint transform
+        }],
+        output='screen',
+    )
+
     nodes = [
         robot_state_pub_node,
         controller_manager,
         joint_state_broadcaster_spawner,
         delay_robot_controller_spawner_after_joint_state_broadcaster_spawner,
         gripper_controller_spawner,
+        wheel_controller_spawner,
+        holonomic_controller_node,
+        odometry_publisher_node,
         rviz_node,
         zero_pose_node
     ]
