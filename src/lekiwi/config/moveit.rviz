@@ -3,9 +3,10 @@ Panels:
     Help Height: 70
     Name: Displays
     Property Tree Widget:
-      Expanded: ~
+      Expanded:
+        - /MotionPlanning1
       Splitter Ratio: 0.5
-    Tree Height: 200
+    Tree Height: 183
   - Class: rviz_common/Help
     Name: Help
   - Class: rviz_common/Views
@@ -60,8 +61,82 @@ Visualization Manager:
         Color Enabled: false
         Interrupt Display: false
         Links:
+          4-Omni-Directional-Wheel_Single_Body-v1:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          4-Omni-Directional-Wheel_Single_Body-v1-1:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          4-Omni-Directional-Wheel_Single_Body-v1-2:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          94868A713_NO-THREADS_Female-Threaded-Hex-Standoff:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          94868A713_NO-THREADS_Female-Threaded-Hex-Standoff-1:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          94868A713_NO-THREADS_Female-Threaded-Hex-Standoff-2:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          94868A713_NO-THREADS_Female-Threaded-Hex-Standoff-3:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          94868A713_NO-THREADS_Female-Threaded-Hex-Standoff-4:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          94868A713_NO-THREADS_Female-Threaded-Hex-Standoff-5:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
           All Links Enabled: true
           Base:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+          Base_08q-v1:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          Battery---Battery-5.2-Ah-DC5521-Plug-v2:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          Bottom-V2-v3:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          Camera-Model-v3:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          Camera-Model-v3-1:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          Camera-Mount-v8:
             Alpha: 1
             Show Axes: false
             Show Trail: false
@@ -73,14 +148,86 @@ Visualization Manager:
             Alpha: 1
             Show Axes: false
             Show Trail: false
-            Value: true
           Link Tree Style: Links in Alphabetic Order
           Lower_Arm:
             Alpha: 1
             Show Axes: false
             Show Trail: false
-            Value: true
           Moving_Jaw:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+          Moving_Jaw_08d-v1:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          Passive_Horn_01-v1:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          Rotation_Pitch_08i-v1:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          SO_ARM100_08k_116_Square-v1:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          SO_ARM100_08k_Asym_Mirror_Clip-v1:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          SO_ARM100_08k_Mirror-v1:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          ST3215_Servo_Motor-v1:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          ST3215_Servo_Motor-v1-1:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          ST3215_Servo_Motor-v1-2:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          STS3215_03a-v1:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          STS3215_03a-v1-1:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          STS3215_03a-v1-2:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          STS3215_03a-v1-3:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          STS3215_03a-v1-4:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          STS3215_03a_Wrist_Roll-v1:
             Alpha: 1
             Show Axes: false
             Show Trail: false
@@ -89,8 +236,21 @@ Visualization Manager:
             Alpha: 1
             Show Axes: false
             Show Trail: false
+          Top-V2-v2:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
             Value: true
           Upper_Arm:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+          WaveShare_Mounting_Plate_01d-v1:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          Wrist-Camera-Mount-v11:
             Alpha: 1
             Show Axes: false
             Show Trail: false
@@ -99,11 +259,66 @@ Visualization Manager:
             Alpha: 1
             Show Axes: false
             Show Trail: false
+          Wrist_Roll_08c-v1:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          Wrist_Roll_Pitch_08i-v1:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
             Value: true
           base_link:
             Alpha: 1
             Show Axes: false
             Show Trail: false
+            Value: true
+          base_plate_layer2-v3:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          drive_motor_mount-v11:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          drive_motor_mount-v11-1:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          drive_motor_mount-v11-2:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          lipo_battery_mount-v3:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          omni_wheel_mount-v5:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          omni_wheel_mount-v5-1:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          omni_wheel_mount-v5-2:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          servo_controller_mount-v3:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
         Loop Animation: true
         Robot Alpha: 0.5
         Robot Color: 150; 50; 150
@@ -145,8 +360,82 @@ Visualization Manager:
       Scene Robot:
         Attached Body Color: 150; 50; 150
         Links:
+          4-Omni-Directional-Wheel_Single_Body-v1:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          4-Omni-Directional-Wheel_Single_Body-v1-1:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          4-Omni-Directional-Wheel_Single_Body-v1-2:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          94868A713_NO-THREADS_Female-Threaded-Hex-Standoff:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          94868A713_NO-THREADS_Female-Threaded-Hex-Standoff-1:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          94868A713_NO-THREADS_Female-Threaded-Hex-Standoff-2:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          94868A713_NO-THREADS_Female-Threaded-Hex-Standoff-3:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          94868A713_NO-THREADS_Female-Threaded-Hex-Standoff-4:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          94868A713_NO-THREADS_Female-Threaded-Hex-Standoff-5:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
           All Links Enabled: true
           Base:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+          Base_08q-v1:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          Battery---Battery-5.2-Ah-DC5521-Plug-v2:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          Bottom-V2-v3:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          Camera-Model-v3:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          Camera-Model-v3-1:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          Camera-Mount-v8:
             Alpha: 1
             Show Axes: false
             Show Trail: false
@@ -158,14 +447,86 @@ Visualization Manager:
             Alpha: 1
             Show Axes: false
             Show Trail: false
-            Value: true
           Link Tree Style: Links in Alphabetic Order
           Lower_Arm:
             Alpha: 1
             Show Axes: false
             Show Trail: false
-            Value: true
           Moving_Jaw:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+          Moving_Jaw_08d-v1:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          Passive_Horn_01-v1:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          Rotation_Pitch_08i-v1:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          SO_ARM100_08k_116_Square-v1:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          SO_ARM100_08k_Asym_Mirror_Clip-v1:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          SO_ARM100_08k_Mirror-v1:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          ST3215_Servo_Motor-v1:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          ST3215_Servo_Motor-v1-1:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          ST3215_Servo_Motor-v1-2:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          STS3215_03a-v1:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          STS3215_03a-v1-1:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          STS3215_03a-v1-2:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          STS3215_03a-v1-3:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          STS3215_03a-v1-4:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          STS3215_03a_Wrist_Roll-v1:
             Alpha: 1
             Show Axes: false
             Show Trail: false
@@ -174,8 +535,21 @@ Visualization Manager:
             Alpha: 1
             Show Axes: false
             Show Trail: false
+          Top-V2-v2:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
             Value: true
           Upper_Arm:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+          WaveShare_Mounting_Plate_01d-v1:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          Wrist-Camera-Mount-v11:
             Alpha: 1
             Show Axes: false
             Show Trail: false
@@ -184,170 +558,71 @@ Visualization Manager:
             Alpha: 1
             Show Axes: false
             Show Trail: false
+          Wrist_Roll_08c-v1:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          Wrist_Roll_Pitch_08i-v1:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
             Value: true
           base_link:
             Alpha: 1
             Show Axes: false
             Show Trail: false
+            Value: true
+          base_plate_layer2-v3:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          drive_motor_mount-v11:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          drive_motor_mount-v11-1:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          drive_motor_mount-v11-2:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          lipo_battery_mount-v3:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          omni_wheel_mount-v5:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          omni_wheel_mount-v5-1:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          omni_wheel_mount-v5-2:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          servo_controller_mount-v3:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
         Robot Alpha: 0.5
         Show Robot Collision: false
         Show Robot Visual: true
       Value: true
       Velocity_Scaling_Factor: 0.1
-    - Class: moveit_rviz_plugin/Trajectory
-      Color Enabled: false
-      Enabled: true
-      Interrupt Display: false
-      Links:
-        All Links Enabled: true
-        Base:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        Expand Joint Details: false
-        Expand Link Details: false
-        Expand Tree: false
-        Fixed_Gripper:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        Link Tree Style: Links in Alphabetic Order
-        Lower_Arm:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        Moving_Jaw:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        Shoulder_Rotation_Pitch:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        Upper_Arm:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        Wrist_Pitch_Roll:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        base_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-      Loop Animation: false
-      Name: Trajectory
-      Robot Alpha: 0.5
-      Robot Color: 150; 50; 150
-      Robot Description: robot_description
-      Show Robot Collision: false
-      Show Robot Visual: true
-      Show Trail: false
-      State Display Time: 3x
-      Trail Step Size: 1
-      Trajectory Topic: /display_planned_path
-      Use Sim Time: false
-      Value: true
-    - Class: moveit_rviz_plugin/PlanningScene
-      Enabled: true
-      Move Group Namespace: ""
-      Name: PlanningScene
-      Planning Scene Topic: /monitored_planning_scene
-      Robot Description: robot_description
-      Scene Geometry:
-        Scene Alpha: 0.8999999761581421
-        Scene Color: 50; 230; 50
-        Scene Display Time: 0.009999999776482582
-        Show Scene Geometry: true
-        Voxel Coloring: Z-Axis
-        Voxel Rendering: Occupied Voxels
-      Scene Robot:
-        Attached Body Color: 150; 50; 150
-        Links:
-          All Links Enabled: true
-          Base:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          Expand Joint Details: false
-          Expand Link Details: false
-          Expand Tree: false
-          Fixed_Gripper:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          Link Tree Style: Links in Alphabetic Order
-          Lower_Arm:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          Moving_Jaw:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          Shoulder_Rotation_Pitch:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          Upper_Arm:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          Wrist_Pitch_Roll:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          base_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-        Robot Alpha: 1
-        Show Robot Collision: false
-        Show Robot Visual: true
-      Value: true
-    - Class: rviz_default_plugins/Image
-      Enabled: true
-      Max Value: 1
-      Median window: 5
-      Min Value: 0
-      Name: Image
-      Normalize Range: true
-      Topic:
-        Depth: 5
-        Durability Policy: Volatile
-        History Policy: Keep Last
-        Reliability Policy: Reliable
-        Value: /camera1/image_raw
-      Value: true
-    - Class: rviz_default_plugins/Image
-      Enabled: true
-      Max Value: 1
-      Median window: 5
-      Min Value: 0
-      Name: Image
-      Normalize Range: true
-      Topic:
-        Depth: 5
-        Durability Policy: Volatile
-        History Policy: Keep Last
-        Reliability Policy: Reliable
-        Value: /camera2/image_raw
-      Value: true
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -366,25 +641,25 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz_default_plugins/Orbit
-      Distance: 1.1492207050323486
+      Distance: 1.0358374118804932
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: -0.06238885223865509
-        Y: -0.28566887974739075
-        Z: 0.2392931580543518
+        X: -0.10000000149011612
+        Y: 0.25
+        Z: 0.30000001192092896
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: -0.06999821215867996
+      Pitch: 0.15499988198280334
       Target Frame: base_link
       Value: Orbit (rviz_default_plugins)
-      Yaw: 1.0337908267974854
+      Yaw: 0.0920000895857811
     Saved: ~
 Window Geometry:
   Displays:
@@ -393,16 +668,12 @@ Window Geometry:
   Help:
     collapsed: false
   Hide Left Dock: false
-  Hide Right Dock: true
-  Image:
-    collapsed: false
+  Hide Right Dock: false
   MotionPlanning:
     collapsed: false
   MotionPlanning - Trajectory Slider:
     collapsed: false
-  QMainWindow State: 000000ff00000000fd0000000100000000000002b4000003b9fc0200000009fb00000044004d006f00740069006f006e0050006c0061006e006e0069006e00670020002d0020005400720061006a006500630074006f0072007900200053006c00690064006500720000000000ffffffff0000004100fffffffb000000100044006900730070006c006100790073010000003d0000014b000000c900fffffffb0000001c004d006f00740069006f006e0050006c0061006e006e0069006e0067010000018e000001b20000017d00fffffffb0000000800480065006c0070000000029a0000006e0000006e00fffffffb0000000a005600690065007700730100000346000000b0000000a400fffffffb000000280020002d0020005400720061006a006500630074006f0072007900200053006c00690064006500720000000000ffffffff0000000000000000fb0000003c005400720061006a006500630074006f007200790020002d0020005400720061006a006500630074006f0072007900200053006c00690064006500720000000000ffffffff0000004100fffffffb0000000a0049006d006100670065030000067f00000344000000f3000000d4fb0000000a0049006d00610067006503000002cb0000035c000000f7000000be000004c6000003b900000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
-  Trajectory - Trajectory Slider:
-    collapsed: false
+  QMainWindow State: 000000ff00000000fd0000000100000000000002b4000003b9fc0200000005fb00000044004d006f00740069006f006e0050006c0061006e006e0069006e00670020002d0020005400720061006a006500630074006f0072007900200053006c00690064006500720000000000ffffffff0000004100fffffffb000000100044006900730070006c006100790073010000003d0000013a000000c900fffffffb0000001c004d006f00740069006f006e0050006c0061006e006e0069006e0067010000017d000001b00000017d00fffffffb0000000800480065006c0070000000029a0000006e0000006e00fffffffb0000000a005600690065007700730100000333000000c3000000a400ffffff000004c6000003b900000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
   Views:
     collapsed: false
   Width: 1920

@@ -1,17 +1,18 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="lekiwi">
     <xacro:arg name="initial_positions_file" default="initial_positions.yaml" />
-    <xacro:arg name="use_fake_hardware" default="false" />
+    <xacro:arg name="use_fake_hardware" default="false"/>
 
     <!-- Import lekiwi urdf file -->
-    <xacro:include filename="$(find lekiwi)/urdf/lekiwi_5dof.urdf" />
+    <xacro:include filename="$(find lekiwi)/urdf/lekiwi_complete.urdf" />
 
     <!-- Import control_xacro -->
     <xacro:include filename="lekiwi.ros2_control.xacro" />
 
 
-    <xacro:lekiwi_ros2_control
-        name="SO100ARM"
+
+    <xacro:lekiwi_ros2_control 
+        name="SO100ARM" 
         initial_positions_file="$(arg initial_positions_file)"
-        use_fake_hardware="$(arg use_fake_hardware)" />
+        use_fake_hardware="$(arg use_fake_hardware)"/> 
 </robot>

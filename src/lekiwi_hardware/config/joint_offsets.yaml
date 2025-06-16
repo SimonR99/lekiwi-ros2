@@ -9,19 +9,19 @@ joint_offsets:
   # Joint-specific angle offsets in degrees
   # Positive values rotate in the positive direction
   shoulder_rotation:
-    angle_offset_deg: 29.0 # (-4 + 33) degrees
+    angle_offset_deg: 0.0 # (-2 + 33) degrees
 
   shoulder_pitch:
-    angle_offset_deg: 105.0 # (96 + 9) degrees
+    angle_offset_deg: 0.0 # (-92 + 9) degrees
 
   elbow:
-    angle_offset_deg: -110.0 # (-89 - 21) degrees
+    angle_offset_deg: 0.0 # (82 - 21) degrees
 
   wrist_pitch:
-    angle_offset_deg: -74.0 # (-58 - 16) degrees
+    angle_offset_deg: 0.0 # (72 - 16) degrees
 
   wrist_roll:
-    angle_offset_deg: -37.0 # (-7 - 30) degrees
+    angle_offset_deg: 90.0 # (-1 - 30) degrees
 
   gripper:
     angle_offset_deg: 0.0 # No offset for gripper

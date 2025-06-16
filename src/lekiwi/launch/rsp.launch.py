@@ -3,5 +3,5 @@ from moveit_configs_utils.launches import generate_rsp_launch
 
 
 def generate_launch_description():
-    moveit_config = MoveItConfigsBuilder("lekiwi", package_name="lekiwi").to_moveit_configs()
+    moveit_config = MoveItConfigsBuilder("LeKiwi", package_name="lekiwi").to_moveit_configs()
     return generate_rsp_launch(moveit_config)

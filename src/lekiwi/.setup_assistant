@@ -1,13 +1,13 @@
 moveit_setup_assistant_config:
   urdf:
     package: lekiwi
-    relative_path: urdf/lekiwi_5dof.urdf
+    relative_path: urdf/lekiwi_complete.urdf
   srdf:
     relative_path: config/lekiwi.srdf
   package_settings:
     author_name: Simon Roy
     author_email: simon.roy@example.com
-    generated_timestamp: 1741952847
+    generated_timestamp: 1750039186
   control_xacro:
     command:
       - position

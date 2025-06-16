@@ -125,6 +125,14 @@ CallbackReturn LeKiwiInterface::on_activate(const rclcpp_lifecycle::State& /*pre
       "feedback", 10, std::bind(&LeKiwiInterface::feedback_callback, this, std::placeholders::_1));
   command_publisher_ = node_->create_publisher<sensor_msgs::msg::JointState>("command", 10);
 
+  // Create services for torque and calibration control
+  torque_service_ = node_->create_service<std_srvs::srv::Trigger>(
+      "torque", std::bind(&LeKiwiInterface::torque_callback, this, std::placeholders::_1, std::placeholders::_2));
+
+  calib_service_ = node_->create_service<std_srvs::srv::Trigger>(
+      "calibrate",
+      std::bind(&LeKiwiInterface::calibration_callback, this, std::placeholders::_1, std::placeholders::_2));
+
   executor_ = std::make_shared<rclcpp::executors::SingleThreadedExecutor>();
   executor_->add_node(node_);
   spin_thread_ = std::thread([this]() { executor_->spin(); });
@@ -188,7 +196,8 @@ hardware_interface::return_type LeKiwiInterface::write(const rclcpp::Time& time,
       RCLCPP_DEBUG(rclcpp::get_logger("LeKiwiInterface"), "Servo %d command: %.2f rad -> %d ticks", servo_id,
                    position_commands_[i], joint_pos_cmd);
 
-      if (!st3215_.RegWritePosEx(servo_id, joint_pos_cmd, 4500, 255))
+      // Reduced speed from 4500 to 2000 for smoother motion
+      if (!st3215_.RegWritePosEx(servo_id, joint_pos_cmd, 2000, 255))
       {
         RCLCPP_WARN(rclcpp::get_logger("LeKiwiInterface"), "Failed to write position to servo %d", servo_id);
       }
@@ -303,6 +312,7 @@ double LeKiwiInterface::ticks_to_radians(int ticks, size_t servo_idx)
   }
 
   // Convert servo ticks to radians using configured zero position
+  // NOTE: No direction multiplier here - we read the actual servo position
   int zero_pos = zero_positions_[servo_idx];
   double angle_ticks = static_cast<double>(ticks - zero_pos);
   return (angle_ticks / 4096.0) * 2.0 * M_PI;  // 4096 ticks = 360 degrees = 2π radians

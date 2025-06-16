@@ -19,11 +19,11 @@ Stephen Brawner (brawner@gmail.com)
 
   <joint name="base_link_joint" type="fixed">
     <parent link="base_link" />
-    <child link="Base" />
+    <child link="Base_08q-v1" />
     <origin xyz="0 0 0" rpy="0 0 0" />
   </joint>
   <link
-    name="Base">
+    name="Base_08q-v1">
     <inertial>
       <origin
         xyz="-2.45960666746703E-07 0.0311418169687909 0.0175746661003382"
@@ -111,7 +111,7 @@ Stephen Brawner (brawner@gmail.com)
       xyz="0 -0.0452 0.0165"
       rpy="1.5708 0 -0.6" />
     <parent
-      link="Base" />
+      link="Base_08q-v1" />
     <child
       link="Shoulder_Rotation_Pitch" />
     <axis

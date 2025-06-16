@@ -1,4 +1,4 @@
-# Default initial positions for lekiwi's ros2_control fake system
+# Default initial positions for LeKiwi's ros2_control fake system
 
 initial_positions:
   Elbow: 0

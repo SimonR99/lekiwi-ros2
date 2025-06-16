@@ -1,0 +1,801 @@
+<?xml version="1.0" encoding="utf-8"?>
+<robot name="lekiwi">
+
+    <!-- Mobile Base Link - Main platform -->
+    <link name="mobile_base_link">
+        <inertial>
+            <origin xyz="-4.730687660675253e-15 -2.7155537377808555e-05 -0.0035000000000000005"
+                rpy="0.0 0.0 0.0" />
+            <mass value="1.9468624348344596" />
+            <inertia ixx="0.005637109888809055" iyy="0.005628440956780792" izz="0.0112496514690387"
+                ixy="1.3447333053523504e-16" iyz="2.6469779601696886e-23"
+                ixz="1.7848833522297417e-20" />
+        </inertial>
+        <visual name="mobile_base_visual">
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+            <geometry>
+                <mesh
+                    filename="package://lekiwi/models/lekiwi_mobile_base/meshes/base_plate_layer1-v5.stl"
+                    scale="0.001 0.001 0.001" />
+            </geometry>
+            <material name="mobile_base_material">
+                <color rgba="0.7 0.7 0.7 1.0" />
+            </material>
+        </visual>
+        <collision name="mobile_base_collision">
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+            <geometry>
+                <mesh
+                    filename="package://lekiwi/models/lekiwi_mobile_base/meshes/base_plate_layer1-v5.stl"
+                    scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+
+    <!-- Top plate -->
+    <joint name="top_plate_joint" type="fixed">
+        <origin xyz="0 0 0.06" rpy="0 0 0" />
+        <parent link="mobile_base_link" />
+        <child link="top_plate_link" />
+    </joint>
+
+    <link name="top_plate_link">
+        <inertial>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <mass value="0.5" />
+            <inertia ixx="0.01" ixy="0" ixz="0" iyy="0.01" iyz="0" izz="0.01" />
+        </inertial>
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh
+                    filename="package://lekiwi/models/lekiwi_mobile_base/meshes/base_plate_layer2-v3.stl"
+                    scale="0.001 0.001 0.001" />
+            </geometry>
+            <material name="">
+                <color rgba="0.6 0.6 0.6 1" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh
+                    filename="package://lekiwi/models/lekiwi_mobile_base/meshes/base_plate_layer2-v3.stl"
+                    scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+
+    <!-- Connect the existing arm base to the mobile base -->
+    <joint name="mobile_base_to_arm_base" type="fixed">
+        <parent link="mobile_base_link" />
+        <child link="base_link" />
+        <!-- Mount the arm on top of the mobile base, elevated by the base plate thickness -->
+        <origin xyz="0.0 0.0 0.02" rpy="0 0 0" />
+    </joint>
+
+    <!-- Base link for the arm (keeping existing structure) -->
+    <link name="base_link">
+    </link>
+
+    <joint name="base_link_joint" type="fixed">
+        <parent link="base_link" />
+        <child link="Base" />
+        <origin xyz="0 0 0" rpy="0 0 0" />
+    </joint>
+
+    <!-- Existing arm links (Base link) -->
+    <link name="Base">
+        <inertial>
+            <origin xyz="-2.45960666746703E-07 0.0311418169687909 0.0175746661003382" rpy="0 0 0" />
+            <mass value="0.193184127927598" />
+            <inertia ixx="0.000137030709467877" ixy="2.10136126944992E-08"
+                ixz="4.24087422551286E-09" iyy="0.000169089551209259" iyz="2.26514711036514E-05"
+                izz="0.000145097720857224" />
+        </inertial>
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://lekiwi/models/lekiwi_5dof/meshes/Base.STL" />
+            </geometry>
+            <material name="">
+                <color rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://lekiwi/models/lekiwi_5dof/meshes/Base.STL" />
+            </geometry>
+        </collision>
+    </link>
+
+    <!-- Existing arm joints and links - Shoulder -->
+    <joint name="Shoulder_Rotation" type="continuous">
+        <origin xyz="0 -0.0452 0.0165" rpy="1.5708 0 -0.6" />
+        <parent link="Base" />
+        <child link="Shoulder_Rotation_Pitch" />
+        <axis xyz="0 -1 0" />
+    </joint>
+
+    <link name="Shoulder_Rotation_Pitch">
+        <inertial>
+            <origin xyz="-9.07886224712597E-05 0.0590971820568318 0.031089016892169" rpy="0 0 0" />
+            <mass value="0.119226314127197" />
+            <inertia ixx="5.90408775624429E-05" ixy="4.90800532852998E-07"
+                ixz="-5.90451772654387E-08" iyy="3.21498601038881E-05" iyz="-4.58026206663885E-06"
+                izz="5.86058514263952E-05" />
+        </inertial>
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh
+                    filename="package://lekiwi/models/lekiwi_5dof/meshes/Shoulder_Rotation_Pitch.STL" />
+            </geometry>
+            <material name="">
+                <color rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh
+                    filename="package://lekiwi/models/lekiwi_5dof/meshes/Shoulder_Rotation_Pitch.STL"
+                    scale="0.9 0.9 0.9" />
+            </geometry>
+        </collision>
+    </link>
+
+    <!-- Continue with rest of the arm... I'll include the essential parts -->
+    <joint name="Shoulder_Pitch" type="continuous">
+        <origin xyz="0 0.1025 0.0306" rpy="0.155 0 0" />
+        <parent link="Shoulder_Rotation_Pitch" />
+        <child link="Upper_Arm" />
+        <axis xyz="1 0 0" />
+    </joint>
+
+    <link name="Upper_Arm">
+        <inertial>
+            <origin xyz="-1.7205170190925E-05 0.0701802156327694 0.00310545118155671" rpy="0 0 0" />
+            <mass value="0.162409284599177" />
+            <inertia ixx="0.000167153146617081" ixy="1.03902689187701E-06"
+                ixz="-1.20161820645189E-08" iyy="7.01946992214245E-05" iyz="2.11884806298698E-06"
+                izz="0.000213280241160769" />
+        </inertial>
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://lekiwi/models/lekiwi_5dof/meshes/Upper_Arm.STL" />
+            </geometry>
+            <material name="">
+                <color rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://lekiwi/models/lekiwi_5dof/meshes/Upper_Arm.STL"
+                    scale="0.9 0.9 0.9" />
+            </geometry>
+        </collision>
+    </link>
+
+    <!-- Complete arm with all links -->
+    <joint name="Elbow" type="continuous">
+        <origin xyz="0 0.11257 0.028" rpy="-0.301 0 0" />
+        <parent link="Upper_Arm" />
+        <child link="Lower_Arm" />
+        <axis xyz="1 0 0" />
+    </joint>
+
+    <link name="Lower_Arm">
+        <inertial>
+            <origin xyz="-0.00339603710186651 0.00137796353960074 0.0768006751156044" rpy="0 0 0" />
+            <mass value="0.147967774582291" />
+            <inertia ixx="0.000105333995841409" ixy="1.73059237226499E-07"
+                ixz="-1.1720305455211E-05" iyy="0.000138766654485212" iyz="1.77429964684103E-06"
+                izz="5.08741652515214E-05" />
+        </inertial>
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://lekiwi/models/lekiwi_5dof/meshes/Lower_Arm.STL" />
+            </geometry>
+            <material name="">
+                <color rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://lekiwi/models/lekiwi_5dof/meshes/Lower_Arm.STL"
+                    scale="0.9 0.9 0.9" />
+            </geometry>
+        </collision>
+    </link>
+
+    <joint name="Wrist_Pitch" type="continuous">
+        <origin xyz="0 0.0052 0.1349" rpy="-1.802 0 0" />
+        <parent link="Lower_Arm" />
+        <child link="Wrist_Pitch_Roll" />
+        <axis xyz="1 0 0" />
+    </joint>
+
+    <link name="Wrist_Pitch_Roll">
+        <inertial>
+            <origin xyz="-0.00852653127372418 -0.0352278997897927 -2.34622481569413E-05" rpy="0 0 0" />
+            <mass value="0.066132067097723" />
+            <inertia ixx="1.95717492443445E-05" ixy="-6.62714374412293E-07"
+                ixz="5.20089016442066E-09" iyy="2.38028417569933E-05" iyz="4.09549055863776E-08"
+                izz="3.4540143384536E-05" />
+        </inertial>
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://lekiwi/models/lekiwi_5dof/meshes/Wrist_Pitch_Roll.STL" />
+            </geometry>
+            <material name="">
+                <color rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://lekiwi/models/lekiwi_5dof/meshes/Wrist_Pitch_Roll.STL"
+                    scale="0.9 0.9 0.9" />
+            </geometry>
+        </collision>
+    </link>
+
+    <joint name="Wrist_Roll" type="continuous">
+        <origin xyz="0 -0.0601 0" rpy="0 1.05708 0" />
+        <parent link="Wrist_Pitch_Roll" />
+        <child link="Fixed_Gripper" />
+        <axis xyz="0 1 0" />
+    </joint>
+
+    <link name="Fixed_Gripper">
+        <inertial>
+            <origin xyz="0.00552376906426563 -0.0280167153359021 0.000483582592841092" rpy="0 0 0" />
+            <mass value="0.0929859131176897" />
+            <inertia ixx="4.3328249304211E-05" ixy="7.09654328670947E-06" ixz="5.99838530879484E-07"
+                iyy="3.04451747368212E-05" iyz="-1.58743247545413E-07" izz="5.02460913506734E-05" />
+        </inertial>
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://lekiwi/models/lekiwi_5dof/meshes/Fixed_Gripper.STL" />
+            </geometry>
+            <material name="">
+                <color rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://lekiwi/models/lekiwi_5dof/meshes/Fixed_Gripper.STL"
+                    scale="0.9 0.9 0.9" />
+            </geometry>
+        </collision>
+    </link>
+
+    <joint name="Gripper" type="continuous">
+        <origin xyz="0.0205 -0.0456 0" rpy="0 0 0" />
+        <parent link="Fixed_Gripper" />
+        <child link="Moving_Jaw" />
+        <axis xyz="0 0 1" />
+    </joint>
+
+    <link name="Moving_Jaw">
+        <inertial>
+            <origin xyz="-0.00161744605468241 -0.0303472584046471 0.000449645961853651" rpy="0 0 0" />
+            <mass value="0.0202443794940372" />
+            <inertia ixx="1.10911325081525E-05" ixy="-5.35076503033314E-07"
+                ixz="-9.46105662101403E-09" iyy="3.03576451001973E-06" iyz="-1.71146075110632E-07"
+                izz="1.13947090131722E-05" />
+        </inertial>
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://lekiwi/models/lekiwi_5dof/meshes/Moving_Jaw.STL" />
+            </geometry>
+            <material name="">
+                <color rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://lekiwi/models/lekiwi_5dof/meshes/Moving_Jaw.STL"
+                    scale="0.9 0.9 0.9" />
+            </geometry>
+        </collision>
+    </link>
+
+    <!-- Step 2: Add first wheel assembly (rear wheel) -->
+    <!-- Drive motor mount for rear wheel -->
+    <joint name="rear_drive_motor_mount_joint" type="fixed">
+        <origin xyz="-0.02 -0.1 0.0" rpy="3.141592653589793 -0.0 0.0" />
+        <parent link="mobile_base_link" />
+        <child link="rear_drive_motor_mount" />
+    </joint>
+
+    <link name="rear_drive_motor_mount">
+        <inertial>
+            <origin xyz="-0.0005387977877578853 0.00013596517365616734 -0.0031122813365712966"
+                rpy="0.0 -0.0 0.0" />
+            <mass value="0.047242276734470956" />
+            <inertia ixx="5.0825527819301506e-06" iyy="4.311179042786683e-06"
+                izz="8.973045405784286e-06" ixy="-1.350766273806132e-08"
+                iyz="3.9985254125769694e-08" ixz="-1.2930640441004792e-07" />
+        </inertial>
+        <visual name="rear_drive_motor_mount_visual">
+            <origin xyz="0.0 0.0 -0.0035000000000000005"
+                rpy="3.141592653589793 -0.0 1.5707963267948966" />
+            <geometry>
+                <mesh
+                    filename="package://lekiwi/models/lekiwi_mobile_base/meshes/drive_motor_mount-v11-2.stl"
+                    scale="0.001 0.001 0.001" />
+            </geometry>
+            <material name="motor_mount_material">
+                <color rgba="0.5 0.5 0.5 1.0" />
+            </material>
+        </visual>
+        <collision name="rear_drive_motor_mount_collision">
+            <origin xyz="0.0 0.0 -0.0035000000000000005"
+                rpy="3.141592653589793 -0.0 1.5707963267948966" />
+            <geometry>
+                <mesh
+                    filename="package://lekiwi/models/lekiwi_mobile_base/meshes/drive_motor_mount-v11-2.stl"
+                    scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+
+    <!-- Servo motor for rear wheel -->
+    <joint name="rear_servo_motor_joint" type="fixed">
+        <origin xyz="-0.01214 -0.015999999999999997 -0.0076100000000000004"
+            rpy="3.141592653589793 1.5707963267948966 0" />
+        <parent link="rear_drive_motor_mount" />
+        <child link="rear_servo_motor" />
+    </joint>
+
+    <link name="rear_servo_motor">
+        <inertial>
+            <origin xyz="0.010251219185305343 -0.016877183343657672 -0.021914257028179583"
+                rpy="0.0 -0.0 0.0" />
+            <mass value="0.0658962961901927" />
+            <inertia ixx="1.8215748982019337e-05" iyy="1.391369165568997e-05"
+                izz="1.030090838794644e-05" ixy="-8.885501451912254e-10"
+                iyz="-1.195158171269568e-07" ixz="-1.7998869276666056e-09" />
+        </inertial>
+        <visual name="rear_servo_motor_visual">
+            <origin xyz="0.010249999999999999 -0.025599999999999987 -0.007250000007450583"
+                rpy="-3.141592653589793 -1.5707963267948966 0" />
+            <geometry>
+                <mesh
+                    filename="package://lekiwi/models/lekiwi_mobile_base/meshes/ST3215_Servo_Motor-v1-2.stl"
+                    scale="0.001 0.001 0.001" />
+            </geometry>
+            <material name="servo_material">
+                <color rgba="0.2 0.2 0.8 1.0" />
+            </material>
+        </visual>
+        <collision name="rear_servo_motor_collision">
+            <origin xyz="0.010249999999999999 -0.025599999999999987 -0.007250000007450583"
+                rpy="-3.141592653589793 -1.5707963267948966 0" />
+            <geometry>
+                <mesh
+                    filename="package://lekiwi/models/lekiwi_mobile_base/meshes/ST3215_Servo_Motor-v1-2.stl"
+                    scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+
+    <!-- Revolute joint for wheel rotation (this is the actual wheel drive joint) -->
+    <joint name="rear_wheel_drive" type="continuous">
+        <origin xyz="0.010249999999999999 -0.035199999999999995 -0.03275"
+            rpy="-1.5707963267948966 1.5707963267948966 0" />
+        <parent link="rear_servo_motor" />
+        <child link="rear_wheel_mount" />
+        <axis xyz="0.0 0.0 -1.0" />
+    </joint>
+
+    <!-- Wheel mount -->
+    <link name="rear_wheel_mount">
+        <inertial>
+            <origin xyz="5.9743256737576635e-09 -5.0148034724806225e-09 -0.005522899140934374"
+                rpy="0.0 -0.0 0.0" />
+            <mass value="0.1235708646349694" />
+            <inertia ixx="1.78648151778313e-05" iyy="1.7864798695374842e-05"
+                izz="3.26402691752235e-05" ixy="3.1863413372475765e-12" iyz="-4.243561882097402e-14"
+                ixz="4.731358839058734e-14" />
+        </inertial>
+        <visual name="rear_wheel_mount_visual">
+            <origin xyz="7.450581818169155e-12 2.220446049250313e-18 -0.005587499999999999"
+                rpy="3.141592653589793 6.887535064975403e-49 1.8369701987210297e-16" />
+            <geometry>
+                <mesh
+                    filename="package://lekiwi/models/lekiwi_mobile_base/meshes/omni_wheel_mount-v5-2.stl"
+                    scale="0.001 0.001 0.001" />
+            </geometry>
+            <material name="wheel_mount_material">
+                <color rgba="0.6 0.3 0.1 1.0" />
+            </material>
+        </visual>
+        <collision name="rear_wheel_mount_collision">
+            <origin xyz="7.450581818169155e-12 2.220446049250313e-18 -0.005587499999999999"
+                rpy="3.141592653589793 6.887535064975403e-49 1.8369701987210297e-16" />
+            <geometry>
+                <mesh
+                    filename="package://lekiwi/models/lekiwi_mobile_base/meshes/omni_wheel_mount-v5-2.stl"
+                    scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+
+    <!-- Omni wheel -->
+    <joint name="rear_wheel_joint" type="fixed">
+        <origin xyz="0.0 0.0 -0.007174999999999994" rpy="-1.5707963267948966 -0.0 0.0" />
+        <parent link="rear_wheel_mount" />
+        <child link="rear_wheel" />
+    </joint>
+
+    <link name="rear_wheel">
+        <inertial>
+            <origin xyz="-9.805110055688405e-08 0.015875012090586064 -9.143534264177689e-08"
+                rpy="0.0 -0.0 0.0" />
+            <mass value="1.3542854082324305" />
+            <inertia ixx="0.0010936167993003225" iyy="0.0018798127501507863"
+                izz="0.0010936140861738455" ixy="-4.1677764986761383e-10"
+                iyz="8.101180750536008e-12" ixz="-6.83978047246436e-09" />
+        </inertial>
+        <visual name="rear_wheel_visual">
+            <origin xyz="7.450578487500081e-12 0.015874999999999986 6.661338147750939e-18"
+                rpy="1.5707963267948966 0.26179938779914924 -1.0046485565123013e-33" />
+            <geometry>
+                <mesh
+                    filename="package://lekiwi/models/lekiwi_mobile_base/meshes/4-Omni-Directional-Wheel_Single_Body-v1-2.stl"
+                    scale="0.001 0.001 0.001" />
+            </geometry>
+            <material name="wheel_material">
+                <color rgba="0.1 0.1 0.1 1.0" />
+            </material>
+        </visual>
+        <collision name="rear_wheel_collision">
+            <origin xyz="7.450578487500081e-12 0.015874999999999986 6.661338147750939e-18"
+                rpy="1.5707963267948966 0.26179938779914924 -1.0046485565123013e-33" />
+            <geometry>
+                <mesh
+                    filename="package://lekiwi/models/lekiwi_mobile_base/meshes/4-Omni-Directional-Wheel_Single_Body-v1-2.stl"
+                    scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+
+    <!-- Step 3: Add remaining two wheels (right and left) -->
+
+    <!-- RIGHT WHEEL ASSEMBLY -->
+    <!-- Drive motor mount for right wheel -->
+    <joint name="right_drive_motor_mount_joint" type="fixed">
+        <origin xyz="0.07928203 0.022679490000000004 0.0" rpy="0.0 -0.0 0.0" />
+        <parent link="mobile_base_link" />
+        <child link="right_drive_motor_mount" />
+    </joint>
+
+    <link name="right_drive_motor_mount">
+        <inertial>
+            <origin xyz="0.00015164729670767764 -0.0005345932342180682 -0.003112281336571299"
+                rpy="0.0 -0.0 0.0" />
+            <mass value="0.047242276734470956" />
+            <inertia ixx="4.492324498495657e-06" iyy="4.901407326221227e-06"
+                izz="8.973045405784395e-06" ixy="-3.2726079558618873e-07"
+                iyz="-1.319752581540088e-07" ixz="3.002495635533459e-08" />
+        </inertial>
+        <visual name="right_drive_motor_mount_visual">
+            <origin xyz="2.3027551065979426e-09 1.924311203715945e-09 0.0035000000000000005"
+                rpy="0.0 -0.0 0.5235987755982988" />
+            <geometry>
+                <mesh
+                    filename="package://lekiwi/models/lekiwi_mobile_base/meshes/drive_motor_mount-v11-1.stl"
+                    scale="0.001 0.001 0.001" />
+            </geometry>
+            <material name="motor_mount_material">
+                <color rgba="0.5 0.5 0.5 1.0" />
+            </material>
+        </visual>
+        <collision name="right_drive_motor_mount_collision">
+            <origin xyz="2.3027551065979426e-09 1.924311203715945e-09 0.0035000000000000005"
+                rpy="0.0 -0.0 0.5235987755982988" />
+            <geometry>
+                <mesh
+                    filename="package://lekiwi/models/lekiwi_mobile_base/meshes/drive_motor_mount-v11-1.stl"
+                    scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+
+    <!-- Servo motor for right wheel -->
+    <joint name="right_servo_motor_joint" type="fixed">
+        <origin xyz="-0.007786400000000002 -0.018513550000000004 0.0076100000000000004"
+            rpy="-7.401486830834375e-17 -1.5707963267948966 0" />
+        <parent link="right_drive_motor_mount" />
+        <child link="right_servo_motor" />
+    </joint>
+
+    <link name="right_servo_motor">
+        <inertial>
+            <origin xyz="0.01025121918530536 0.027816898485662264 -0.00435175717107704"
+                rpy="0.0 -0.0 0.0" />
+            <mass value="0.0658962961901927" />
+            <inertia ixx="1.82157489820195e-05" iyy="1.1100600471096564e-05"
+                izz="1.3113999572540226e-05" ixy="2.0030228758654146e-09"
+                iyz="-1.504623135553104e-06" ixz="1.3043646559715847e-10" />
+        </inertial>
+        <visual name="right_servo_motor_visual">
+            <origin xyz="0.010250000000000013 0.019478687706257793 -0.019238066498388086"
+                rpy="-1.570796326794896 0.5235987755982991 -1.5707963267948968" />
+            <geometry>
+                <mesh
+                    filename="package://lekiwi/models/lekiwi_mobile_base/meshes/ST3215_Servo_Motor-v1-1.stl"
+                    scale="0.001 0.001 0.001" />
+            </geometry>
+            <material name="servo_material">
+                <color rgba="0.2 0.2 0.8 1.0" />
+            </material>
+        </visual>
+        <collision name="right_servo_motor_collision">
+            <origin xyz="0.010250000000000013 0.019478687706257793 -0.019238066498388086"
+                rpy="-1.570796326794896 0.5235987755982991 -1.5707963267948968" />
+            <geometry>
+                <mesh
+                    filename="package://lekiwi/models/lekiwi_mobile_base/meshes/ST3215_Servo_Motor-v1-1.stl"
+                    scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+
+    <!-- Revolute joint for right wheel rotation -->
+    <joint name="right_wheel_drive" type="continuous">
+        <origin xyz="0.010249999999999999 0.04636234 -0.014801910000000005"
+            rpy="-1.5707963267948966 1.5707963267948966 0" />
+        <parent link="right_servo_motor" />
+        <child link="right_wheel_mount" />
+        <axis xyz="0.866025 1.0674582272562919e-32 0.5" />
+    </joint>
+
+    <!-- Right wheel mount -->
+    <link name="right_wheel_mount">
+        <inertial>
+            <origin xyz="0.004782968825905343 5.966875074037148e-09 0.0027614494161754166"
+                rpy="0.0 -0.0 0.0" />
+            <mass value="0.1235708646349694" />
+            <inertia ixx="2.8946401592011724e-05" iyy="1.7864815177831735e-05"
+                izz="2.155866627858642e-05" ixy="1.5521959531496902e-12"
+                iyz="-2.7831093278498503e-12" ixz="6.397966372990203e-06" />
+        </inertial>
+        <visual name="right_wheel_mount_visual">
+            <origin xyz="0.004838917318364206 -1.7763568394002505e-17 0.002793745502761027"
+                rpy="1.047197551196598 -1.1102230246251563e-16 1.5707963267948968" />
+            <geometry>
+                <mesh
+                    filename="package://lekiwi/models/lekiwi_mobile_base/meshes/omni_wheel_mount-v5-1.stl"
+                    scale="0.001 0.001 0.001" />
+            </geometry>
+            <material name="wheel_mount_material">
+                <color rgba="0.6 0.3 0.1 1.0" />
+            </material>
+        </visual>
+        <collision name="right_wheel_mount_collision">
+            <origin xyz="0.004838917318364206 -1.7763568394002505e-17 0.002793745502761027"
+                rpy="1.047197551196598 -1.1102230246251563e-16 1.5707963267948968" />
+            <geometry>
+                <mesh
+                    filename="package://lekiwi/models/lekiwi_mobile_base/meshes/omni_wheel_mount-v5-1.stl"
+                    scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+
+    <!-- Right omni wheel -->
+    <joint name="right_wheel_joint" type="fixed">
+        <origin xyz="0.0062137300000000015 0.0 0.0035875000000000056"
+            rpy="-1.5707963267948966 5.551115123125765e-17 -1.8816263559048997e-48" />
+        <parent link="right_wheel_mount" />
+        <child link="right_wheel" />
+    </joint>
+
+    <link name="right_wheel">
+        <inertial>
+            <origin xyz="0.01374810955311503 -0.007937600014431929 -7.105207897817323e-08"
+                rpy="0.0 -0.0 0.0" />
+            <mass value="1.3542854082324305" />
+            <inertia ixx="0.0016832621879788534" iyy="0.0012901614102005313"
+                izz="0.0010936200374455259" ixy="-0.0003404354598931583"
+                iyz="-4.340089721204671e-09" ixz="-2.9730281413814508e-09" />
+        </inertial>
+        <visual name="right_wheel_visual">
+            <origin xyz="0.013748155931950041 -0.007937495502761073 -2.2204460492503132e-17"
+                rpy="1.5707963267948966 0.26179938779914924 0" />
+            <geometry>
+                <mesh
+                    filename="package://lekiwi/models/lekiwi_mobile_base/meshes/4-Omni-Directional-Wheel_Single_Body-v1-1.stl"
+                    scale="0.001 0.001 0.001" />
+            </geometry>
+            <material name="wheel_material">
+                <color rgba="0.1 0.1 0.1 1.0" />
+            </material>
+        </visual>
+        <collision name="right_wheel_collision">
+            <origin xyz="0.013748155931950041 -0.007937495502761073 -2.2204460492503132e-17"
+                rpy="1.5707963267948966 0.26179938779914924 0" />
+            <geometry>
+                <mesh
+                    filename="package://lekiwi/models/lekiwi_mobile_base/meshes/4-Omni-Directional-Wheel_Single_Body-v1-1.stl"
+                    scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+
+    <!-- LEFT WHEEL ASSEMBLY -->
+    <!-- Drive motor mount for left wheel -->
+    <joint name="left_drive_motor_mount_joint" type="fixed">
+        <origin xyz="-0.05928203 0.057320510000000005 0.0" rpy="3.141592653589793 -0.0 0.0" />
+        <parent link="mobile_base_link" />
+        <child link="left_drive_motor_mount" />
+    </joint>
+
+    <link name="left_drive_motor_mount">
+        <inertial>
+            <origin xyz="0.00038715049105024767 -0.0003986280605619008 0.0031122813365712966"
+                rpy="0.0 -0.0 0.0" />
+            <mass value="0.047242276734470956" />
+            <inertia ixx="4.515720456649471e-06" iyy="4.8780113680673386e-06"
+                izz="8.973045405784395e-06" ixy="-3.4076845832425005e-07"
+                iyz="9.199000402824292e-08" ixz="-9.928144805471037e-08" />
+        </inertial>
+        <visual name="left_drive_motor_mount_visual">
+            <origin xyz="-2.3027550621890213e-09 1.9243111992750526e-09 -0.0035000000000000035"
+                rpy="-3.141592653589793 -1.0340504353649803e-16 -2.6179938779914944" />
+            <geometry>
+                <mesh
+                    filename="package://lekiwi/models/lekiwi_mobile_base/meshes/drive_motor_mount-v11.stl"
+                    scale="0.001 0.001 0.001" />
+            </geometry>
+            <material name="motor_mount_material">
+                <color rgba="0.5 0.5 0.5 1.0" />
+            </material>
+        </visual>
+        <collision name="left_drive_motor_mount_collision">
+            <origin xyz="-2.3027550621890213e-09 1.9243111992750526e-09 -0.0035000000000000035"
+                rpy="-3.141592653589793 -1.0340504353649803e-16 -2.6179938779914944" />
+            <geometry>
+                <mesh
+                    filename="package://lekiwi/models/lekiwi_mobile_base/meshes/drive_motor_mount-v11.stl"
+                    scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+
+    <!-- Servo motor for left wheel -->
+    <joint name="left_servo_motor_joint" type="fixed">
+        <origin xyz="0.019926399999999997 -0.0025135499999999933 -0.0076100000000000004"
+            rpy="3.141592653589793 1.5707963267948966 0" />
+        <parent link="left_drive_motor_mount" />
+        <child link="left_servo_motor" />
+    </joint>
+
+    <link name="left_servo_motor">
+        <inertial>
+            <origin xyz="0.010251219185305386 -0.010539715142004517 0.02557319387622896"
+                rpy="-6.077163357286271e-64 -0.0 0.0" />
+            <mass value="0.0658962961901927" />
+            <inertia ixx="1.8215748982019662e-05" iyy="1.1307607938668487e-05"
+                izz="1.2906992104968112e-05" ixy="-1.1144727307283995e-09"
+                iyz="1.6241389526799929e-06" ixz="1.6694504620406482e-09" />
+        </inertial>
+        <visual name="left_servo_motor_visual">
+            <origin xyz="0.010250000000000035 0.006521312293742278 0.02579524618281096"
+                rpy="1.5707963267948968 0.523598775598299 1.5707963267948972" />
+            <geometry>
+                <mesh
+                    filename="package://lekiwi/models/lekiwi_mobile_base/meshes/ST3215_Servo_Motor-v1.stl"
+                    scale="0.001 0.001 0.001" />
+            </geometry>
+            <material name="servo_material">
+                <color rgba="0.2 0.2 0.8 1.0" />
+            </material>
+        </visual>
+        <collision name="left_servo_motor_collision">
+            <origin xyz="0.010250000000000035 0.006521312293742278 0.02579524618281096"
+                rpy="1.5707963267948968 0.523598775598299 1.5707963267948972" />
+            <geometry>
+                <mesh
+                    filename="package://lekiwi/models/lekiwi_mobile_base/meshes/ST3215_Servo_Motor-v1.stl"
+                    scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+
+    <!-- Revolute joint for left wheel rotation -->
+    <joint name="left_wheel_drive" type="continuous">
+        <origin xyz="0.010249999999999999 -0.010762340000000004 0.046859090000000006"
+            rpy="-1.5707963267948966 1.5707963267948966 0" />
+        <parent link="left_servo_motor" />
+        <child link="left_wheel_mount" />
+        <axis xyz="-0.866025 -2.0578792567370943e-32 0.5" />
+    </joint>
+
+    <!-- Left wheel mount -->
+    <link name="left_wheel_mount">
+        <inertial>
+            <origin xyz="5.9743256737576635e-09 -5.0148034724806225e-09 -0.005522899140934374"
+                rpy="0.0 -0.0 0.0" />
+            <mass value="0.1235708646349694" />
+            <inertia ixx="1.78648151778313e-05" iyy="1.7864798695374842e-05"
+                izz="3.26402691752235e-05" ixy="3.1863413372475765e-12" iyz="-4.243561882097402e-14"
+                ixz="4.731358839058734e-14" />
+        </inertial>
+        <visual name="left_wheel_mount_visual">
+            <origin xyz="-0.0062137300000000015 0.0 0.003587499999999997"
+                rpy="-1.5707963267948966 5.551115123125802e-17 4.930380657631324e-32" />
+            <geometry>
+                <mesh
+                    filename="package://lekiwi/models/lekiwi_mobile_base/meshes/omni_wheel_mount-v5.stl"
+                    scale="0.001 0.001 0.001" />
+            </geometry>
+            <material name="wheel_mount_material">
+                <color rgba="0.6 0.3 0.1 1.0" />
+            </material>
+        </visual>
+        <collision name="left_wheel_mount_collision">
+            <origin xyz="-0.0062137300000000015 0.0 0.003587499999999997"
+                rpy="-1.5707963267948966 5.551115123125802e-17 4.930380657631324e-32" />
+            <geometry>
+                <mesh
+                    filename="package://lekiwi/models/lekiwi_mobile_base/meshes/omni_wheel_mount-v5.stl"
+                    scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+
+    <!-- Left omni wheel -->
+    <joint name="left_wheel_joint" type="fixed">
+        <origin xyz="0.0 0.0 -0.007174999999999994" rpy="-1.5707963267948966 -0.0 0.0" />
+        <parent link="left_wheel_mount" />
+        <child link="left_wheel" />
+    </joint>
+
+    <link name="left_wheel">
+        <inertial>
+            <origin xyz="-9.805110055688405e-08 0.015875012090586064 -9.143534264177689e-08"
+                rpy="0.0 -0.0 0.0" />
+            <mass value="1.3542854082324305" />
+            <inertia ixx="0.0010936167993003225" iyy="0.0018798127501507863"
+                izz="0.0010936140861738455" ixy="-4.1677764986761383e-10"
+                iyz="8.101180750536008e-12" ixz="-6.83978047246436e-09" />
+        </inertial>
+        <visual name="left_wheel_visual">
+            <origin xyz="7.450578487500081e-12 0.015874999999999986 6.661338147750939e-18"
+                rpy="1.5707963267948966 0.26179938779914924 -1.0046485565123013e-33" />
+            <geometry>
+                <mesh
+                    filename="package://lekiwi/models/lekiwi_mobile_base/meshes/4-Omni-Directional-Wheel_Single_Body-v1.stl"
+                    scale="0.001 0.001 0.001" />
+            </geometry>
+            <material name="wheel_material">
+                <color rgba="0.1 0.1 0.1 1.0" />
+            </material>
+        </visual>
+        <collision name="left_wheel_collision">
+            <origin xyz="7.450578487500081e-12 0.015874999999999986 6.661338147750939e-18"
+                rpy="1.5707963267948966 0.26179938779914924 -1.0046485565123013e-33" />
+            <geometry>
+                <mesh
+                    filename="package://lekiwi/models/lekiwi_mobile_base/meshes/4-Omni-Directional-Wheel_Single_Body-v1.stl"
+                    scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+
+</robot> 

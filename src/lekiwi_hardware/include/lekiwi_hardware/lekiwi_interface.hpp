@@ -62,7 +62,7 @@ private:
 
   std::map<std::string, JointOffsetConfig> joint_offset_config_;
   std::vector<int> zero_positions_;                        // Calculated from config
-  std::vector<int> servo_directions_{ 1, 1, 1, 1, 1, 1 };  // Direction multipliers
+  std::vector<int> servo_directions_{ 1, 1, 1, 1, 1, 1 };  // Direction multipliers - all normal
 
   // Calibration data
   struct JointCalibration
