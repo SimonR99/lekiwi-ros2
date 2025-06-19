@@ -2,13 +2,14 @@
 
 import os
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, RegisterEventHandler, TimerAction
+from launch.actions import DeclareLaunchArgument, RegisterEventHandler, TimerAction, IncludeLaunchDescription
 from launch.event_handlers import OnProcessExit
 from launch.conditions import IfCondition
 from launch.substitutions import Command, FindExecutable, PathJoinSubstitution, LaunchConfiguration
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
 from launch_ros.parameter_descriptions import ParameterValue
+from launch.launch_description_sources import PythonLaunchDescriptionSource
 from moveit_configs_utils import MoveItConfigsBuilder
 from nav2_common.launch import RewrittenYaml
 
@@ -73,6 +74,12 @@ def generate_launch_description():
         description='Test zero pose after startup'
     )
 
+    start_cameras_arg = DeclareLaunchArgument(
+        'start_cameras',
+        default_value='true',
+        description='Start camera video feeds'
+    )
+
     # Launch configurations
     use_sim_time = LaunchConfiguration('use_sim_time')
     use_fake_hardware = LaunchConfiguration('use_fake_hardware')
@@ -83,6 +90,7 @@ def generate_launch_description():
     start_nav2 = LaunchConfiguration('start_nav2')
     start_moveit = LaunchConfiguration('start_moveit')
     zero_pose = LaunchConfiguration('zero_pose')
+    start_cameras = LaunchConfiguration('start_cameras')
 
     # MoveIt Configuration
     moveit_config = MoveItConfigsBuilder("lekiwi", package_name="lekiwi").to_moveit_configs()
@@ -370,6 +378,22 @@ def generate_launch_description():
     )
 
     # ===================
+    # CAMERA NODES
+    # ===================
+
+    # Include camera launch file
+    cameras_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource([
+            PathJoinSubstitution([FindPackageShare('lekiwi'), 'launch', 'cameras.launch.py'])
+        ]),
+        launch_arguments={
+            'start_bottom_camera': 'true',
+            'start_wrist_camera': 'false',  # Set to true if you have a second camera
+        }.items(),
+        condition=IfCondition(start_cameras),
+    )
+
+    # ===================
     # LAUNCH DESCRIPTION
     # ===================
 
@@ -384,6 +408,7 @@ def generate_launch_description():
         start_nav2_arg,
         start_moveit_arg,
         zero_pose_arg,
+        start_cameras_arg,
 
         # Hardware nodes
         robot_state_pub_node,
@@ -405,6 +430,9 @@ def generate_launch_description():
 
         # MoveIt nodes  
         delay_moveit_after_controllers,
+
+        # Camera nodes
+        cameras_launch,
 
         # RViz nodes
         rviz_node,

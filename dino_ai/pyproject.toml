@@ -1,0 +1,137 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dino-ai"
+version = "1.0.0"
+description = "Platform-independent AI system for robotics"
+readme = "README.md"
+authors = [
+    {name = "Simon", email = "simon@lekiwi.com"}
+]
+license = {text = "MIT"}
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+requires-python = ">=3.8"
+dependencies = [
+    "numpy>=1.20.0",
+    "pillow>=8.0.0",
+    "asyncio-mqtt>=0.11.0",
+    "pydantic>=2.0.0",
+]
+
+[project.optional-dependencies]
+ros = [
+    "rclpy",
+    "std-msgs",
+    "geometry-msgs",
+    "sensor-msgs",
+    "nav-msgs",
+    "diagnostic-msgs",
+    "cv-bridge",
+]
+ai = [
+    "langchain>=0.2.14",
+    "langgraph>=0.2.6",
+    "langchain-openai>=0.1.22",
+    "langchain-anthropic>=0.1.23",
+    "openai>=1.0.0",
+    "anthropic>=0.3.0",
+]
+mcp = [
+    "langchain-mcp-adapters>=0.1.0",
+    "fastmcp>=0.1.0",
+    "omegaconf>=2.3.0",
+]
+vision = [
+    "opencv-python>=4.5.0",
+    "torch>=1.9.0",
+    "transformers>=4.20.0",
+    "requests>=2.25.0",
+    "fastapi>=0.68.0",
+    "uvicorn>=0.15.0",
+]
+speech = [
+    "SpeechRecognition>=3.8.0",
+    "pyttsx3>=2.90",
+    "sounddevice>=0.4.0",
+    "faster-whisper>=0.9.0",
+    "pyaudio>=0.2.11",
+    "torch>=1.9.0",
+    "piper-tts>=1.0.0",
+]
+dev = [
+    "pytest>=6.0.0",
+    "black>=22.0.0",
+    "flake8>=4.0.0",
+    "mypy>=0.950",
+    "isort>=5.10.0",
+]
+cli = [
+    "langgraph-cli[inmem]>=0.1.71",
+]
+all = [
+    "dino-ai[ros,ai,vision,speech,mcp,cli]"
+]
+
+[project.urls]
+Homepage = "https://github.com/lekiwi/dino-ai"
+Repository = "https://github.com/lekiwi/dino-ai"
+Documentation = "https://github.com/lekiwi/dino-ai/blob/main/README.md"
+Issues = "https://github.com/lekiwi/dino-ai/issues"
+
+[project.scripts]
+dino-ai = "dino_ai.main:main_sync"
+
+[tool.setuptools.packages.find]
+include = ["dino_ai*"]
+exclude = ["tests*"]
+
+[tool.black]
+line-length = 88
+target-version = ['py38']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | _build
+  | buck-out
+  | build
+  | dist
+)/
+'''
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+line_length = 88
+known_first_party = ["dino_ai"]
+
+[tool.mypy]
+python_version = "3.8"
+warn_return_any = true
+warn_unused_configs = true
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "-v --tb=short"

@@ -200,6 +200,127 @@ ros2 topic echo /gripper_controller/state
 
 Note: The gripper position ranges from 0.0 (closed) to 0.085 (fully open). The max_effort parameter controls the gripping force.
 
+## Camera System
+
+The robot supports USB camera integration for visual feedback and perception tasks. The system includes both bottom-mounted and optional wrist-mounted cameras.
+
+### Prerequisites
+
+Install required ROS2 packages:
+
+```bash
+sudo apt install ros-humble-usb-cam ros-humble-image-transport ros-humble-image-transport-plugins ros-humble-rqt-image-view
+```
+
+### Camera Hardware Setup
+
+1. **Connect USB Camera**: Connect your USB camera to the robot system
+2. **Verify Camera Device**: Check available cameras:
+   ```bash
+   v4l2-ctl --list-devices
+   ```
+3. **Set Permissions** (if needed):
+   ```bash
+   sudo chmod 666 /dev/video0
+   ```
+
+### Launch Camera System
+
+#### Option 1: With Full Robot System
+```bash
+source install/setup.bash
+ros2 launch lekiwi lekiwi_full.launch.py start_cameras:=true
+```
+
+#### Option 2: Camera Only
+```bash
+source install/setup.bash
+ros2 launch lekiwi cameras.launch.py
+```
+
+#### Option 3: Individual Camera Control
+```bash
+# Start bottom camera only
+ros2 launch lekiwi cameras.launch.py start_bottom_camera:=true start_wrist_camera:=false
+
+# Start both cameras (if available)
+ros2 launch lekiwi cameras.launch.py start_bottom_camera:=true start_wrist_camera:=true
+```
+
+### View Camera Feed
+
+#### RQt Image View (Recommended)
+```bash
+ros2 run rqt_image_view rqt_image_view
+```
+Then select `/bottom_camera/image_raw` from the dropdown menu.
+
+#### RViz2 Integration
+1. Open RViz2: `rviz2`
+2. Add "Image" display
+3. Set topic to `/bottom_camera/image_raw`
+
+### Available Camera Topics
+
+When cameras are running, these topics are available:
+
+- `/bottom_camera/image_raw` - Raw camera images
+- `/bottom_camera/camera_info` - Camera calibration information
+- `/wrist_camera/image_raw` - Wrist camera images (if enabled)
+- `/wrist_camera/camera_info` - Wrist camera calibration (if enabled)
+
+### Camera Configuration
+
+Camera settings are configured in `launch/cameras.launch.py`. Key parameters include:
+
+- `video_device`: Camera device path (e.g., `/dev/video0`)
+- `framerate`: Frame rate in FPS (default: 15.0)
+- `image_width/height`: Image resolution (default: 640x480)
+- `pixel_format`: Color format (`yuyv2rgb` for RGB output)
+- `brightness`: Brightness setting (0-100, default: 50)
+- `auto_white_balance`: Automatic white balance (default: true)
+- `autoexposure`: Automatic exposure (default: true)
+
+To modify camera settings, edit the parameters in the camera node configuration within the launch file.
+
+### Troubleshooting
+
+#### Camera Not Detected
+```bash
+# Check available video devices
+ls /dev/video*
+
+# Check camera capabilities
+v4l2-ctl --list-formats-ext -d /dev/video0
+```
+
+#### Permission Issues
+```bash
+# Add user to video group
+sudo usermod -a -G video $USER
+# Log out and back in, or run:
+newgrp video
+```
+
+#### Performance Issues
+- Reduce frame rate in configuration
+- Lower resolution for better performance
+- Ensure adequate USB bandwidth
+
+### Test Camera Setup
+
+Use the provided test script to verify camera functionality:
+
+```bash
+./test_camera_optimized.sh
+```
+
+This will:
+- Start the camera system
+- Check available topics
+- Verify data streaming
+- Display viewing instructions
+
 ## Demonstrations
 
 ### Gazebo Simulation
