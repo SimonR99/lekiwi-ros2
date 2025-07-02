@@ -1,0 +1,7 @@
+{
+  "dependencies": ["./dino_ai"],
+  "graphs": {
+    "dino_react_agent": "./dino_ai/core/react_brain.py:graph"
+  },
+  "env": ".env"
+}

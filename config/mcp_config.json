@@ -1,0 +1,28 @@
+{
+  "mcpServers": {
+    "math": {
+      "command": "python",
+      "args": ["servers/math_server.py"],
+      "transport": "sse",
+      "host": "127.0.0.1",
+      "port": 8000,
+      "description": "Mathematical operations and calculations"
+    },
+    "tts": {
+      "command": "python",
+      "args": ["servers/piper_server.py"], 
+      "transport": "sse",
+      "host": "127.0.0.1",
+      "port": 8001,
+      "description": "Text-to-speech using Piper TTS"
+    },
+    "vision": {
+      "command": "python",
+      "args": ["servers/vision_server.py"],
+      "transport": "sse", 
+      "host": "127.0.0.1",
+      "port": 8002,
+      "description": "Computer vision and image analysis"
+    }
+  }
+}
