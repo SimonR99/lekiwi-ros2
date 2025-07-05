@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 from launch import LaunchDescription
 from launch.actions import ExecuteProcess, DeclareLaunchArgument, OpaqueFunction, RegisterEventHandler
 from launch.event_handlers import OnProcessExit
@@ -27,7 +29,6 @@ def get_robot_description(context, *args, **kwargs):
         }
 
 def generate_launch_description():
-    # Declare the DOF argument
     dof_arg = DeclareLaunchArgument(
         'dof',
         default_value='5',
@@ -37,7 +38,7 @@ def generate_launch_description():
     pkg_share = FindPackageShare('lekiwi').find('lekiwi')
     model_path = os.path.join(os.path.dirname(os.path.dirname(pkg_share)), 'models')
 
-    # Set the package path for Gazebo
+    # Set Gazebo model path
     if 'GZ_SIM_RESOURCE_PATH' in os.environ:
         os.environ['GZ_SIM_RESOURCE_PATH'] += f":{model_path}"
     else:
@@ -61,7 +62,6 @@ def generate_launch_description():
             output='screen'
         )
 
-        # Define the controller spawner nodes
         joint_state_broadcaster_spawner = ExecuteProcess(
             cmd=['ros2', 'control', 'load_controller', '--set-state', 'active',
                 'joint_state_broadcaster'],
@@ -74,7 +74,6 @@ def generate_launch_description():
             output='screen'
         )
 
-        # Add gripper controller spawner
         gripper_controller_spawner = ExecuteProcess(
             cmd=['ros2', 'control', 'load_controller', '--set-state', 'active',
                 'gripper_controller'],
@@ -82,7 +81,6 @@ def generate_launch_description():
         )
 
         nodes = [
-            # Start robot_state_publisher
             Node(
                 package='robot_state_publisher',
                 executable='robot_state_publisher',
@@ -91,14 +89,13 @@ def generate_launch_description():
                 parameters=[{'robot_description': descriptions['robot_description']}]
             ),
             
-            # Launch Gazebo
             ExecuteProcess(
                 cmd=['gz', 'sim', '-r', 'empty.sdf'],
                 output='screen',
                 additional_env={'GZ_SIM_RESOURCE_PATH': os.environ['GZ_SIM_RESOURCE_PATH']}
             ),
 
-            # Bridge
+            # Bridge between ROS2 and Gazebo
             Node(
                 package='ros_gz_bridge',
                 executable='parameter_bridge',
@@ -113,10 +110,8 @@ def generate_launch_description():
                 ],
             ),
 
-            # Spawn robot
             spawn_robot,
 
-            # Spawn joint_state_broadcaster after robot spawns
             RegisterEventHandler(
                 event_handler=OnProcessExit(
                     target_action=spawn_robot,
@@ -124,7 +119,6 @@ def generate_launch_description():
                 )
             ),
 
-            # Spawn joint_trajectory_controller after joint_state_broadcaster
             RegisterEventHandler(
                 event_handler=OnProcessExit(
                     target_action=joint_state_broadcaster_spawner,
@@ -132,7 +126,6 @@ def generate_launch_description():
                 )
             ),
 
-            # Add gripper controller after joint_trajectory_controller
             RegisterEventHandler(
                 event_handler=OnProcessExit(
                     target_action=joint_trajectory_controller_spawner,

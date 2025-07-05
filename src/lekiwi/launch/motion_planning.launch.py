@@ -11,7 +11,6 @@ from moveit_configs_utils import MoveItConfigsBuilder
 
 
 def generate_launch_description():
-    # Launch arguments
     use_sim_time_arg = DeclareLaunchArgument(
         'use_sim_time',
         default_value='false',
@@ -30,15 +29,12 @@ def generate_launch_description():
         description='Launch RViz with MoveIt plugin for motion planning'
     )
 
-    # Launch configurations
     use_sim_time = LaunchConfiguration('use_sim_time')
     start_moveit = LaunchConfiguration('start_moveit')
     use_moveit_rviz = LaunchConfiguration('use_moveit_rviz')
 
-    # MoveIt Configuration
     moveit_config = MoveItConfigsBuilder("lekiwi", package_name="lekiwi").to_moveit_configs()
 
-    # MoveIt move_group node
     move_group_node = Node(
         condition=IfCondition(start_moveit),
         package="moveit_ros_move_group",
@@ -57,7 +53,6 @@ def generate_launch_description():
         ],
     )
 
-    # MoveIt RViz
     moveit_rviz_node = Node(
         condition=IfCondition(use_moveit_rviz),
         package="rviz2",
@@ -74,19 +69,16 @@ def generate_launch_description():
         ],
     )
 
-    # Delay MoveIt RViz to start after move_group
+    # Delay RViz to ensure move_group is ready
     delay_moveit_rviz_after_move_group = TimerAction(
-        period=3.0,  # Wait 3 seconds after move_group starts
+        period=3.0,  # wait 3 seconds
         actions=[moveit_rviz_node]
     )
 
     return LaunchDescription([
-        # Launch arguments
         use_sim_time_arg,
         start_moveit_arg,
         use_moveit_rviz_arg,
-
-        # MoveIt nodes
         move_group_node,
         delay_moveit_rviz_after_move_group,
     ])

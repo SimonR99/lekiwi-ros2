@@ -18,7 +18,6 @@ class JogTool(Node):
     def __init__(self):
         super().__init__('jog_tool')
         
-        # Split joints into arm and gripper
         self.arm_joints = [
             'Shoulder_Rotation',
             'Shoulder_Pitch',
@@ -28,7 +27,6 @@ class JogTool(Node):
         ]
         self.gripper_joint = 'Gripper'
         
-        # For tracking current positions
         self.joint_positions = {}
         self.joint_state_sub = self.create_subscription(
             JointState,
@@ -36,20 +34,17 @@ class JogTool(Node):
             self.joint_state_callback,
             10)
             
-        # Separate clients for arm and gripper
         self.arm_client = ActionClient(
             self,
             FollowJointTrajectory,
             '/lekiwi_controller/follow_joint_trajectory'
         )
         
-        # For gripper control
         self.gripper_pub = self.create_publisher(
             JointTrajectory,
             '/lekiwi_gripper_controller/commands',
             10)
         
-        # For toggling torque
         self.torque_client = self.create_client(Trigger, '/toggle_torque')
         while not self.torque_client.wait_for_service(timeout_sec=1.0):
             self.get_logger().info('Waiting for toggle_torque service...')
@@ -58,9 +53,8 @@ class JogTool(Node):
         self.step_size = 0.1  # radians
         self.status_message = ""
         self.torque_enabled = True
-        self.torque_future = None  # Track the service call future
+        self.torque_future = None
         
-        # Set up poses directory in package share
         self.poses_dir = os.path.join(
             get_package_share_directory('lekiwi_hardware'),
             'config',
@@ -74,27 +68,21 @@ class JogTool(Node):
                 self.joint_positions[name] = msg.position[i]
                 
     def move_joint(self, delta):
-        # Get the correct joint name and index
         if self.selected_joint < len(self.arm_joints):
             joint_name = self.arm_joints[self.selected_joint]
             joint_index = self.selected_joint
-            # self.get_logger().info(f'Moving arm joint: {joint_name} at index {joint_index}')
         else:
             joint_name = self.gripper_joint
-            # self.get_logger().info(f'Moving gripper joint: {joint_name}')
         
         current_pos = self.joint_positions.get(joint_name, 0.0)
         new_pos = current_pos + delta
         
         if joint_name in self.arm_joints:
-            # Send arm trajectory
             goal_msg = FollowJointTrajectory.Goal()
             goal_msg.trajectory.joint_names = self.arm_joints
             
             point = JointTrajectoryPoint()
-            # Initialize with current positions
             point.positions = [self.joint_positions.get(j, 0.0) for j in self.arm_joints]
-            # Only modify the selected joint
             point.positions[joint_index] = new_pos
 
             point.velocities = [0.0] * len(self.arm_joints)
@@ -105,7 +93,6 @@ class JogTool(Node):
             goal_msg.trajectory.points = [point]
             self.arm_client.send_goal_async(goal_msg)
         else:
-            # Send gripper command
             msg = JointTrajectory()
             msg.joint_names = [self.gripper_joint]
             
@@ -116,8 +103,6 @@ class JogTool(Node):
             
             msg.points = [point]
             self.gripper_pub.publish(msg)
-            
-        # self.get_logger().info(f'Moving {joint_name} from {current_pos:.3f} to {new_pos:.3f}')
         
     def save_pose(self, pose_name):
         pose_data = {
@@ -139,12 +124,10 @@ class JogTool(Node):
             with open(filepath, 'r') as f:
                 pose_data = yaml.safe_load(f)
 
-            # Send arm trajectory
             arm_goal = FollowJointTrajectory.Goal()
-            arm_goal.trajectory.joint_names = self.arm_joints  # Only arm joints
+            arm_goal.trajectory.joint_names = self.arm_joints
             
             point = JointTrajectoryPoint()
-            # Get positions only for arm joints
             point.positions = [pose_data['positions'][joint] for joint in self.arm_joints]
             point.velocities = [0.0] * len(self.arm_joints)
             point.accelerations = [0.0] * len(self.arm_joints)
@@ -153,7 +136,6 @@ class JogTool(Node):
             arm_goal.trajectory.points = [point]
             self.arm_client.send_goal_async(arm_goal)
 
-            # Send gripper command separately
             gripper_msg = JointTrajectory()
             gripper_msg.joint_names = [self.gripper_joint]
             
@@ -173,7 +155,6 @@ class JogTool(Node):
         request = Trigger.Request()
         self.torque_future = self.torque_client.call_async(request)
         
-        # Add callback to handle response
         self.torque_future.add_done_callback(self._torque_callback)
         
     def _torque_callback(self, future):
@@ -191,15 +172,12 @@ class JogTool(Node):
             self.torque_future = None
 
 def main(stdscr):
-    # Set up curses
     curses.curs_set(0)
     stdscr.nodelay(1)
     stdscr.timeout(100)
     
     rclpy.init()
     node = JogTool()
-    
-    # Print instructions
     stdscr.addstr(0, 0, "Joint Jog Control")
     stdscr.addstr(1, 0, "----------------")
     stdscr.addstr(2, 0, "Up/Down: Select joint")
@@ -214,7 +192,6 @@ def main(stdscr):
     entering_name = False
     
     while True:
-        # Update display
         for i, joint in enumerate(node.arm_joints + [node.gripper_joint]):
             prefix = ">" if i == node.selected_joint else " "
             pos = node.joint_positions.get(joint, 0.0)
@@ -231,11 +208,10 @@ def main(stdscr):
             
         stdscr.refresh()
         
-        # Process input
         try:
             key = stdscr.getch()
             if entering_name:
-                if key == ord('\n'):  # Enter key
+                if key == ord('\n'):
                     if pose_name:
                         if node.status_message.startswith("Save"):
                             node.save_pose(pose_name)
@@ -243,12 +219,12 @@ def main(stdscr):
                             node.load_pose(pose_name)
                     entering_name = False
                     pose_name = ""
-                elif key == 27:  # Escape key
+                elif key == 27:
                     entering_name = False
                     pose_name = ""
-                elif key == curses.KEY_BACKSPACE or key == 127:  # Backspace
+                elif key == curses.KEY_BACKSPACE or key == 127:
                     pose_name = pose_name[:-1]
-                elif key >= 32 and key <= 126:  # Printable characters
+                elif key >= 32 and key <= 126:
                     pose_name += chr(key)
             else:
                 if key == ord('q'):
@@ -266,9 +242,8 @@ def main(stdscr):
                 elif key == ord('-'):
                     node.step_size = max(node.step_size / 1.5, 0.01)
                 elif key == ord('t'):
-                    # Toggle torque without waiting
                     node.toggle_torque()
-                    rclpy.spin_once(node)  # Process any pending callbacks
+                    rclpy.spin_once(node)
                 elif key == ord('s'):
                     entering_name = True
                     node.status_message = "Save pose"
@@ -279,7 +254,6 @@ def main(stdscr):
         except KeyboardInterrupt:
             break
             
-        # Process any pending callbacks including torque response
         rclpy.spin_once(node, timeout_sec=0.1)
     
     rclpy.shutdown()

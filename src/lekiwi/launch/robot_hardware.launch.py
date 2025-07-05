@@ -11,7 +11,6 @@ from launch_ros.parameter_descriptions import ParameterValue
 
 
 def generate_launch_description():
-    # Launch arguments
     use_fake_hardware_arg = DeclareLaunchArgument(
         'use_fake_hardware',
         default_value='false',
@@ -24,11 +23,10 @@ def generate_launch_description():
         description='Test zero pose after startup'
     )
 
-    # Launch configurations
     use_fake_hardware = LaunchConfiguration('use_fake_hardware')
     zero_pose = LaunchConfiguration('zero_pose')
 
-    # Get URDF via xacro
+    # Generate robot description from xacro
     robot_description_content = ParameterValue(
         Command(
             [
@@ -45,7 +43,6 @@ def generate_launch_description():
 
     robot_description = {'robot_description': robot_description_content}
 
-    # Robot State Publisher
     robot_state_pub_node = Node(
         package='robot_state_publisher',
         executable='robot_state_publisher',
@@ -53,7 +50,6 @@ def generate_launch_description():
         parameters=[robot_description]
     )
 
-    # Controller Manager
     controller_manager = Node(
         package="controller_manager",
         executable="ros2_control_node",
@@ -66,14 +62,12 @@ def generate_launch_description():
         output="screen",
     )
 
-    # Joint State Broadcaster
     joint_state_broadcaster_spawner = Node(
         package="controller_manager",
         executable="spawner",
         arguments=["joint_state_broadcaster", "--controller-manager", "/controller_manager"],
     )
 
-    # Arm Controller
     robot_controller_spawner = Node(
         package="controller_manager",
         executable="spawner",
@@ -81,7 +75,6 @@ def generate_launch_description():
         output="screen",
     )
 
-    # Gripper Controller
     gripper_controller_spawner = Node(
         package="controller_manager",
         executable="spawner",
@@ -89,7 +82,6 @@ def generate_launch_description():
         output="screen",
     )
 
-    # Wheel Controller
     wheel_controller_spawner = Node(
         package="controller_manager",
         executable="spawner",
@@ -97,7 +89,6 @@ def generate_launch_description():
         output="screen",
     )
 
-    # Holonomic Controller
     holonomic_controller_node = Node(
         package='lekiwi_hardware',
         executable='holonomic_controller.py',
@@ -107,12 +98,11 @@ def generate_launch_description():
             'base_radius': 0.125,
             'max_wheel_velocity': 3.0,
             'cmd_timeout': 0.2,
-            'safety_check_rate': 10.0,
+            'safety_check_rate': 50.0,
         }],
         output='screen',
     )
 
-    # Odometry Publisher
     odometry_publisher_node = Node(
         package='lekiwi_hardware',
         executable='odometry_publisher.py',
@@ -127,7 +117,6 @@ def generate_launch_description():
         output='screen',
     )
 
-    # Zero Pose Test Node
     zero_pose_node = Node(
         condition=IfCondition(zero_pose),
         package='lekiwi_hardware',
@@ -135,7 +124,7 @@ def generate_launch_description():
         name='zero_pose_test',
     )
 
-    # Event handlers for controller sequencing
+    # Controller sequencing - ensure proper startup order
     delay_robot_controller_after_joint_state = RegisterEventHandler(
         event_handler=OnProcessExit(
             target_action=joint_state_broadcaster_spawner,
@@ -158,11 +147,8 @@ def generate_launch_description():
     )
 
     return LaunchDescription([
-        # Launch arguments
         use_fake_hardware_arg,
         zero_pose_arg,
-
-        # Hardware nodes
         robot_state_pub_node,
         controller_manager,
         joint_state_broadcaster_spawner,

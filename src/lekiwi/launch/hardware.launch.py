@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, RegisterEventHandler
 from launch.event_handlers import OnProcessExit
@@ -8,7 +10,6 @@ from launch_ros.parameter_descriptions import ParameterValue
 from launch.conditions import IfCondition
 
 def generate_launch_description():
-    # Add launch argument
     zero_pose_arg = DeclareLaunchArgument(
         'zero_pose',
         default_value='false',
@@ -21,7 +22,6 @@ def generate_launch_description():
         description='Visualize the robot in RViz'
     )
 
-    # Get URDF via xacro
     robot_description_content = ParameterValue(
         Command(
             [
@@ -63,7 +63,6 @@ def generate_launch_description():
         arguments=["joint_state_broadcaster", "--controller-manager", "/controller_manager"],
     )
 
-    # Delay rviz start after joint_state_broadcaster
     robot_controller_spawner = Node(
         package="controller_manager",
         executable="spawner",
@@ -78,7 +77,6 @@ def generate_launch_description():
         output="screen",
     )
 
-    # Add wheel controller spawner
     wheel_controller_spawner = Node(
         package="controller_manager",
         executable="spawner",
@@ -86,7 +84,7 @@ def generate_launch_description():
         output="screen",
     )
 
-    # Delay loading and starting robot_controller after joint_state_broadcaster
+    # Controller sequencing - spawn controllers in order
     delay_robot_controller_spawner_after_joint_state_broadcaster_spawner = RegisterEventHandler(
         event_handler=OnProcessExit(
             target_action=joint_state_broadcaster_spawner,
@@ -94,6 +92,19 @@ def generate_launch_description():
         )
     )
 
+    delay_gripper_controller_after_robot_controller = RegisterEventHandler(
+        event_handler=OnProcessExit(
+            target_action=robot_controller_spawner,
+            on_exit=[gripper_controller_spawner],
+        )
+    )
+
+    delay_wheel_controller_after_gripper_controller = RegisterEventHandler(
+        event_handler=OnProcessExit(
+            target_action=gripper_controller_spawner,
+            on_exit=[wheel_controller_spawner],
+        )
+    )
 
     rviz_node = Node(
         condition=IfCondition(LaunchConfiguration('rviz')),
@@ -103,7 +114,6 @@ def generate_launch_description():
         arguments=['-d', PathJoinSubstitution([FindPackageShare('lekiwi'), 'config', 'urdf.rviz'])]
     )
 
-    # Add zero pose test node
     zero_pose_node = Node(
         condition=IfCondition(LaunchConfiguration('zero_pose')),
         package='lekiwi_hardware',
@@ -111,47 +121,47 @@ def generate_launch_description():
         name='zero_pose_test',
     )
 
-    # Add holonomic controller node with safety parameters
+    # Holonomic controller for omniwheels
     holonomic_controller_node = Node(
         package='lekiwi_hardware',
         executable='holonomic_controller.py',
         name='holonomic_controller',
         parameters=[{
-            'wheel_radius': 0.05,      # 5cm wheel radius (adjust as needed)
-            'base_radius': 0.125,      # 12.5cm from center to wheel (adjust as needed)
-            'max_wheel_velocity': 3.0, # max rad/s per wheel (adjust as needed)
-            'cmd_timeout': 0.2,        # safety timeout in seconds
-            'safety_check_rate': 10.0, # safety check frequency in Hz
+            'wheel_radius': 0.05,      # 5cm wheel radius
+            'base_radius': 0.125,      # 12.5cm from center to wheel
+            'max_wheel_velocity': 3.0, # max rad/s per wheel
+            'cmd_timeout': 0.2,        # safety timeout
+            'safety_check_rate': 50.0, # safety check frequency
         }],
         output='screen',
     )
 
-    # Add odometry publisher node
+    # Odometry publisher for nav2 integration
     odometry_publisher_node = Node(
         package='lekiwi_hardware',
         executable='odometry_publisher.py',
         name='odometry_publisher',
         parameters=[{
-            'wheel_radius': 0.05,      # 5cm wheel radius (must match holonomic controller)
-            'base_radius': 0.125,      # 12.5cm from center to wheel (must match)
-            'odom_frame_id': 'odom',   # odometry frame name
-            'base_frame_id': 'base_footprint', # robot base frame name (aligned with nav2 config)
-            'publish_tf': True,        # publish odom->base_footprint transform
+            'wheel_radius': 0.05,      # must match holonomic controller
+            'base_radius': 0.125,      # must match holonomic controller
+            'odom_frame_id': 'odom',
+            'base_frame_id': 'base_footprint',
+            'publish_tf': True,        # publish odom->base_footprint tf
         }],
         output='screen',
     )
 
-    nodes = [
+    return LaunchDescription([
+        zero_pose_arg,
+        rviz_arg,
         robot_state_pub_node,
         controller_manager,
         joint_state_broadcaster_spawner,
         delay_robot_controller_spawner_after_joint_state_broadcaster_spawner,
-        gripper_controller_spawner,
-        wheel_controller_spawner,
+        delay_gripper_controller_after_robot_controller,
+        delay_wheel_controller_after_gripper_controller,
         holonomic_controller_node,
         odometry_publisher_node,
         rviz_node,
         zero_pose_node
-    ]
-
-    return LaunchDescription([zero_pose_arg, rviz_arg] + nodes) 
+    ]) 

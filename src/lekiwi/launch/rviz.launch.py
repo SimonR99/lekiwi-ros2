@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, OpaqueFunction
 from launch.substitutions import Command, LaunchConfiguration
@@ -20,7 +22,6 @@ def get_robot_description(context, *args, **kwargs):
     return {'urdf_path': urdf_path, 'rviz_path': rviz_path, 'robot_description': robot_description}
 
 def generate_launch_description():
-    # Declare the DOF argument
     dof_arg = DeclareLaunchArgument(
         'dof',
         default_value='5',

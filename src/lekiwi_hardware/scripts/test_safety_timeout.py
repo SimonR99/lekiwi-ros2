@@ -8,13 +8,11 @@ class SafetyTimeoutTester(Node):
     def __init__(self):
         super().__init__('safety_timeout_tester')
         
-        # Publisher for cmd_vel
         self.cmd_vel_pub = self.create_publisher(Twist, '/cmd_vel', 10)
         
         self.get_logger().info("Safety timeout tester started")
         
     def send_velocity(self, vx, vy, omega, description):
-        """Send a velocity command"""
         msg = Twist()
         msg.linear.x = vx
         msg.linear.y = vy
@@ -33,7 +31,6 @@ def main():
     print("This test demonstrates the safety timeout mechanism.")
     print("The robot will stop automatically if no commands are sent.\n")
     
-    # Wait for initialization
     time.sleep(2)
     
     print("1. Sending forward command...")
@@ -50,10 +47,10 @@ def main():
     print("4. Now waiting 2 seconds WITHOUT sending any commands...")
     print("   The robot should automatically stop due to safety timeout!")
     
-    for i in range(20):  # 2 seconds at 10Hz
+    for i in range(20):
         rclpy.spin_once(tester, timeout_sec=0.1)
         time.sleep(0.1)
-        if i == 10:  # After 1 second
+        if i == 10:
             print("   -> Should see safety timeout message around now...")
     
     print("\n5. Now sending a new command to clear the safety stop...")

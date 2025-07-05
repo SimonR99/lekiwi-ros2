@@ -10,8 +10,6 @@ from launch_ros.substitutions import FindPackageShare
 
 
 def generate_launch_description():
-
-    # Launch arguments
     start_bottom_camera_arg = DeclareLaunchArgument(
         'start_bottom_camera',
         default_value='true',
@@ -24,21 +22,20 @@ def generate_launch_description():
         description='Start the wrist camera feed (if available)'
     )
 
-    # Launch configurations
     start_bottom_camera = LaunchConfiguration('start_bottom_camera')
     start_wrist_camera = LaunchConfiguration('start_wrist_camera')
 
-    # Bottom Camera Node
+    # Bottom camera - adjust /dev/video0 to match your camera device
     bottom_camera_node = Node(
         condition=IfCondition(start_bottom_camera),
         package='usb_cam',
         executable='usb_cam_node_exe',
         name='bottom_camera',
         parameters=[{
-            'video_device': '/dev/video0',
-            'framerate': 15.0,  # Reduce framerate to help with message queue
+            'video_device': '/dev/video0',  # primary camera device
+            'framerate': 15.0,             # reduced for stability
             'io_method': 'mmap',
-            'pixel_format': 'yuyv2rgb',  # Use supported format with automatic RGB conversion
+            'pixel_format': 'yuyv2rgb',
             'image_width': 640,
             'image_height': 480,
             'camera_name': 'bottom_camera',
@@ -55,14 +52,14 @@ def generate_launch_description():
         output='screen',
     )
 
-    # Wrist Camera Node (optional - enable if you have a second camera)
+    # Wrist camera - optional second camera
     wrist_camera_node = Node(
         condition=IfCondition(start_wrist_camera),
         package='usb_cam',
         executable='usb_cam_node_exe',
         name='wrist_camera',
         parameters=[{
-            'video_device': '/dev/video2',  # Change this to match your second camera
+            'video_device': '/dev/video2',  # adjust to match your second camera
             'framerate': 15.0,
             'io_method': 'mmap',
             'pixel_format': 'yuyv2rgb',

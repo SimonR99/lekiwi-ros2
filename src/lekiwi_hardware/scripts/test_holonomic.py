@@ -8,13 +8,11 @@ class HolonomicTester(Node):
     def __init__(self):
         super().__init__('holonomic_tester')
         
-        # Publisher for cmd_vel
         self.cmd_vel_pub = self.create_publisher(Twist, '/cmd_vel', 10)
         
         self.get_logger().info("Holonomic movement tester started")
         
     def send_velocity(self, vx, vy, omega, description):
-        """Send a velocity command"""
         msg = Twist()
         msg.linear.x = vx
         msg.linear.y = vy
@@ -26,7 +24,6 @@ class HolonomicTester(Node):
         )
     
     def stop(self):
-        """Send stop command"""
         self.send_velocity(0.0, 0.0, 0.0, "STOP")
 
 def main():
@@ -36,15 +33,11 @@ def main():
     print("=== LeKiwi Holonomic Control Test ===")
     print("Testing various movement patterns...")
     
-    # Wait for initialization
     time.sleep(2)
     
-    # Test sequence demonstrating holonomic capabilities
     test_sequence = [
-        # (vx, vy, omega, duration, description)
         (0.0, 0.0, 0.0, 1.0, "Initial stop"),
         
-        # Linear movements
         (0.1, 0.0, 0.0, 3.0, "Forward"),
         (0.0, 0.0, 0.0, 1.0, "Stop"),
         (-0.1, 0.0, 0.0, 3.0, "Backward"),
@@ -55,19 +48,16 @@ def main():
         (0.0, -0.1, 0.0, 3.0, "Strafe right"),
         (0.0, 0.0, 0.0, 1.0, "Stop"),
         
-        # Rotational movement
         (0.0, 0.0, 0.3, 3.0, "Rotate counterclockwise"),
         (0.0, 0.0, 0.0, 1.0, "Stop"),
         (0.0, 0.0, -0.3, 3.0, "Rotate clockwise"),
         (0.0, 0.0, 0.0, 1.0, "Stop"),
         
-        # Diagonal movements
         (0.1, 0.1, 0.0, 3.0, "Diagonal forward-left"),
         (0.0, 0.0, 0.0, 1.0, "Stop"),
         (0.1, -0.1, 0.0, 3.0, "Diagonal forward-right"),
         (0.0, 0.0, 0.0, 1.0, "Stop"),
         
-        # Combined movements (holonomic advantage)
         (0.1, 0.0, 0.2, 3.0, "Forward + rotate"),
         (0.0, 0.0, 0.0, 1.0, "Stop"),
         (0.0, 0.1, 0.2, 3.0, "Strafe left + rotate"),
@@ -80,7 +70,6 @@ def main():
         print(f"\n{description}")
         tester.send_velocity(vx, vy, omega, description)
         
-        # Process callbacks and wait
         for _ in range(int(duration * 10)):
             rclpy.spin_once(tester, timeout_sec=0.1)
             time.sleep(0.1)

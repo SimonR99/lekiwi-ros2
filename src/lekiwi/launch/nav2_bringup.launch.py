@@ -13,11 +13,8 @@ from nav2_common.launch import RewrittenYaml
 
 
 def generate_launch_description():
-    # Get the launch directory
     pkg_dir = os.path.dirname(os.path.realpath(__file__))
     pkg_dir = os.path.dirname(pkg_dir)
-
-    # Launch configuration variables
     namespace = LaunchConfiguration('namespace')
     use_sim_time = LaunchConfiguration('use_sim_time')
     autostart = LaunchConfiguration('autostart')
@@ -27,7 +24,6 @@ def generate_launch_description():
     use_respawn = LaunchConfiguration('use_respawn')
     log_level = LaunchConfiguration('log_level')
 
-    # Create the launch configuration variables
     declare_namespace_cmd = DeclareLaunchArgument(
         'namespace',
         default_value='',
@@ -64,7 +60,7 @@ def generate_launch_description():
         'log_level', default_value='info',
         description='log level')
 
-    # Variables
+    # Nav2 lifecycle nodes that need to be managed
     lifecycle_nodes = ['controller_server',
                       'smoother_server', 
                       'planner_server',
@@ -73,7 +69,6 @@ def generate_launch_description():
                       'waypoint_follower',
                       'velocity_smoother']
 
-    # Create our own temporary YAML files that include substitutions
     param_substitutions = {
         'use_sim_time': use_sim_time,
         'autostart': autostart}
@@ -87,7 +82,6 @@ def generate_launch_description():
     stdout_linebuf_envvar = SetEnvironmentVariable(
         'RCUTILS_LOGGING_BUFFERED_STREAM', '1')
 
-    # Specify the actions
     bringup_cmd_group = GroupAction([
         Node(
             condition=IfCondition(PythonExpression([
@@ -259,13 +253,9 @@ def generate_launch_description():
         )
     ])
 
-    # Create the launch description and populate
     ld = LaunchDescription()
 
-    # Set environment variables
     ld.add_action(stdout_linebuf_envvar)
-
-    # Declare the launch options
     ld.add_action(declare_namespace_cmd)
     ld.add_action(declare_use_sim_time_cmd)
     ld.add_action(declare_params_file_cmd)
@@ -275,7 +265,6 @@ def generate_launch_description():
     ld.add_action(declare_use_respawn_cmd)
     ld.add_action(declare_log_level_cmd)
 
-    # Add the actions to launch all of the navigation nodes
     ld.add_action(bringup_cmd_group)
 
     return ld

@@ -8,37 +8,55 @@ class ZeroPoseTest(Node):
     def __init__(self, wait_time=2.0):
         super().__init__('zero_pose_test')
         
-        # Create publisher for arm controller
         self.arm_pub = self.create_publisher(
             JointTrajectory, 
             '/lekiwi_controller/joint_trajectory', 
             10)
             
-        # Joint names in order
-        self.joint_names = [
+        self.gripper_pub = self.create_publisher(
+            JointTrajectory,
+            '/lekiwi_gripper_controller/joint_trajectory',
+            10)
+            
+        self.arm_joint_names = [
             'Shoulder_Rotation',
             'Shoulder_Pitch',
             'Elbow',
             'Wrist_Pitch',
-            'Wrist_Roll',
+            'Wrist_Roll'
+        ]
+        
+        self.gripper_joint_names = [
             'Gripper'
         ]
         
-        # Send zero pose after specified delay
         self.create_timer(wait_time, self.send_zero_pose)
         self.get_logger().info(f'Will send zero pose command in {wait_time} seconds')
 
     def send_zero_pose(self):
-        msg = JointTrajectory()
-        msg.joint_names = self.joint_names
+        # Send arm joints to zero
+        arm_msg = JointTrajectory()
+        arm_msg.joint_names = self.arm_joint_names
         
-        point = JointTrajectoryPoint()
-        point.positions = [0.0] * len(self.joint_names)  # All joints to 0
-        point.time_from_start.sec = 2  # Take 2 seconds to move
+        arm_point = JointTrajectoryPoint()
+        arm_point.positions = [0.0] * len(self.arm_joint_names)
+        arm_point.time_from_start.sec = 2
         
-        msg.points = [point]
-        self.arm_pub.publish(msg)
-        self.get_logger().info('Sent zero pose command')
+        arm_msg.points = [arm_point]
+        self.arm_pub.publish(arm_msg)
+        
+        # Send gripper to zero
+        gripper_msg = JointTrajectory()
+        gripper_msg.joint_names = self.gripper_joint_names
+        
+        gripper_point = JointTrajectoryPoint()
+        gripper_point.positions = [0.0] * len(self.gripper_joint_names)
+        gripper_point.time_from_start.sec = 2
+        
+        gripper_msg.points = [gripper_point]
+        self.gripper_pub.publish(gripper_msg)
+        
+        self.get_logger().info('Sent zero pose command to arm and gripper')
 
 def main():
     parser = argparse.ArgumentParser()

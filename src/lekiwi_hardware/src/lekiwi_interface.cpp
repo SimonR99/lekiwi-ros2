@@ -60,7 +60,6 @@ CallbackReturn LeKiwiInterface::on_init(const hardware_interface::HardwareInfo& 
                          std::stoi(hardware_info.hardware_parameters.at("serial_baudrate")) :
                          1000000;
 
-  // Load joint offsets configuration
   std::string joint_offsets_file = hardware_info.hardware_parameters.count("joint_offsets_file") ?
                                        hardware_info.hardware_parameters.at("joint_offsets_file") :
                                        "";
@@ -74,7 +73,6 @@ CallbackReturn LeKiwiInterface::on_init(const hardware_interface::HardwareInfo& 
     }
   }
 
-  // Calculate zero positions from loaded offsets
   calculate_zero_positions();
 
   size_t num_joints = info_.joints.size();
@@ -95,10 +93,8 @@ std::vector<hardware_interface::StateInterface> LeKiwiInterface::export_state_in
   {
     const std::string& joint_name = info_.joints[i].name;
 
-    // All joints provide position state
     state_interfaces.emplace_back(joint_name, hardware_interface::HW_IF_POSITION, &position_states_[i]);
 
-    // Wheel joints also provide velocity state
     if (joint_name.find("wheel") != std::string::npos)
     {
       state_interfaces.emplace_back(joint_name, hardware_interface::HW_IF_VELOCITY, &velocity_states_[i]);
@@ -114,12 +110,10 @@ std::vector<hardware_interface::CommandInterface> LeKiwiInterface::export_comman
   {
     const std::string& joint_name = info_.joints[i].name;
 
-    // Arm joints use position control
     if (joint_name.find("wheel") == std::string::npos)
     {
       command_interfaces.emplace_back(joint_name, hardware_interface::HW_IF_POSITION, &position_commands_[i]);
     }
-    // Wheel joints use velocity control
     else
     {
       command_interfaces.emplace_back(joint_name, hardware_interface::HW_IF_VELOCITY, &velocity_commands_[i]);
@@ -148,7 +142,6 @@ CallbackReturn LeKiwiInterface::on_activate(const rclcpp_lifecycle::State& /*pre
       "feedback", 10, std::bind(&LeKiwiInterface::feedback_callback, this, std::placeholders::_1));
   command_publisher_ = node_->create_publisher<sensor_msgs::msg::JointState>("command", 10);
 
-  // Create services for torque and calibration control
   torque_service_ = node_->create_service<std_srvs::srv::Trigger>(
       "torque", std::bind(&LeKiwiInterface::torque_callback, this, std::placeholders::_1, std::placeholders::_2));
 
@@ -160,7 +153,6 @@ CallbackReturn LeKiwiInterface::on_activate(const rclcpp_lifecycle::State& /*pre
   executor_->add_node(node_);
   spin_thread_ = std::thread([this]() { executor_->spin(); });
 
-  // Load calibration
   std::string calib_file =
       info_.hardware_parameters.count("calibration_file") ? info_.hardware_parameters.at("calibration_file") : "";
 
@@ -214,16 +206,13 @@ hardware_interface::return_type LeKiwiInterface::write(const rclcpp::Time& time,
     {
       uint8_t servo_id = static_cast<uint8_t>(i + 1);
 
-      // Differentiate between ARM joints (IDs 1-6) and WHEEL joints (IDs 7-9)
       if (servo_id <= 6)
       {
-        // ARM JOINTS: Use position control
         int joint_pos_cmd = radians_to_ticks(position_commands_[i], i);
 
         RCLCPP_DEBUG(rclcpp::get_logger("LeKiwiInterface"), "ARM Servo %d command: %.2f rad -> %d ticks", servo_id,
                      position_commands_[i], joint_pos_cmd);
 
-        // Reduced speed from 4500 to 2000 for smoother motion
         if (!st3215_.RegWritePosEx(servo_id, joint_pos_cmd, 2000, 255))
         {
           RCLCPP_WARN(rclcpp::get_logger("LeKiwiInterface"), "Failed to write position to arm servo %d", servo_id);
@@ -231,24 +220,18 @@ hardware_interface::return_type LeKiwiInterface::write(const rclcpp::Time& time,
       }
       else
       {
-        // WHEEL JOINTS: Use velocity control
-        // Convert rad/s to servo speed units
         double velocity_rad_s = velocity_commands_[i];
 
-        // Convert radians/sec to degrees/sec, then to servo raw units
-        // Servo speed: 4096 ticks = 360 degrees, so steps_per_deg = 4096/360
         double velocity_deg_s = velocity_rad_s * (180.0 / M_PI);
         double steps_per_deg = 4096.0 / 360.0;
         int16_t wheel_speed = static_cast<int16_t>(velocity_deg_s * steps_per_deg);
 
-        // Apply direction multiplier
         wheel_speed *= servo_directions_[i];
 
         RCLCPP_DEBUG(rclcpp::get_logger("LeKiwiInterface"),
                      "WHEEL Servo %d velocity: %.3f rad/s -> %.1f deg/s -> %d raw", servo_id, velocity_rad_s,
                      velocity_deg_s, wheel_speed);
 
-        // Use velocity control for wheels
         if (!st3215_.WriteSpe(servo_id, wheel_speed, 50))
         {
           RCLCPP_WARN(rclcpp::get_logger("LeKiwiInterface"), "Failed to write velocity to wheel servo %d", servo_id);
@@ -256,7 +239,6 @@ hardware_interface::return_type LeKiwiInterface::write(const rclcpp::Time& time,
       }
     }
 
-    // Only call RegWriteAction for arm joints that use RegWritePosEx
     st3215_.RegWriteAction();
   }
 
@@ -269,7 +251,7 @@ hardware_interface::return_type LeKiwiInterface::write(const rclcpp::Time& time,
     {
       cmd_msg.name.push_back(info_.joints[i].name);
       cmd_msg.position.push_back(position_commands_[i]);
-      cmd_msg.velocity.push_back(velocity_commands_[i]);  // Add velocity commands
+      cmd_msg.velocity.push_back(velocity_commands_[i]);
     }
 
     command_publisher_->publish(cmd_msg);
@@ -286,30 +268,26 @@ hardware_interface::return_type LeKiwiInterface::read(const rclcpp::Time& time, 
     {
       uint8_t servo_id = static_cast<uint8_t>(i + 1);
 
-      // Add small delay between reads
-      std::this_thread::sleep_for(std::chrono::milliseconds(10));  // Increased delay
+      std::this_thread::sleep_for(std::chrono::milliseconds(1));
 
       if (!torque_enabled_)
       {
-        // When torque is disabled, only try to read position
         int raw_pos = st3215_.ReadPos(servo_id);
         if (raw_pos != -1)
         {
           position_states_[i] = ticks_to_radians(raw_pos, i);
         }
-        continue;  // Skip other reads
+        continue;
       }
 
-      // Full feedback read when torque is enabled
       if (st3215_.FeedBack(servo_id) != -1)
       {
         int raw_pos = st3215_.ReadPos(servo_id);
         position_states_[i] = ticks_to_radians(raw_pos, i);
 
-        // Read velocity feedback and convert to rad/s
         int raw_speed = st3215_.ReadSpeed(servo_id);
-        double speed_deg_s = raw_speed * (360.0 / 4096.0);                          // Convert raw to deg/s
-        velocity_states_[i] = speed_deg_s * (M_PI / 180.0) * servo_directions_[i];  // Convert to rad/s with direction
+        double speed_deg_s = raw_speed * (360.0 / 4096.0);
+        velocity_states_[i] = speed_deg_s * (M_PI / 180.0) * servo_directions_[i];
 
         double pwm = -1 * st3215_.ReadLoad(servo_id) / 10.0;
         int move = st3215_.ReadMove(servo_id);
@@ -358,7 +336,6 @@ hardware_interface::return_type LeKiwiInterface::read(const rclcpp::Time& time, 
 void LeKiwiInterface::calibrate_servo(uint8_t servo_id, int current_pos)
 {
   size_t idx = servo_id - 1;
-  // Calculate offset from current position to expected zero
   int offset = current_pos - zero_positions_[idx];
   RCLCPP_INFO(rclcpp::get_logger("LeKiwiInterface"), "Servo %d: current=%d, zero=%d, offset=%d", servo_id, current_pos,
               zero_positions_[idx], offset);
@@ -371,28 +348,24 @@ double LeKiwiInterface::ticks_to_radians(int ticks, size_t servo_idx)
     return 0.0;
   }
 
-  // Convert servo ticks to radians using configured zero position
   int zero_pos = zero_positions_[servo_idx];
   double angle_ticks = static_cast<double>(ticks - zero_pos);
 
-  // Apply servo direction multiplier (especially important for wheels)
   angle_ticks *= servo_directions_[servo_idx];
 
-  return (angle_ticks / 4096.0) * 2.0 * M_PI;  // 4096 ticks = 360 degrees = 2π radians
+  return (angle_ticks / 4096.0) * 2.0 * M_PI;
 }
 
 int LeKiwiInterface::radians_to_ticks(double radians, size_t servo_idx)
 {
   if (servo_idx >= zero_positions_.size() || servo_idx >= servo_directions_.size())
   {
-    return 2048;  // Default center
+    return 2048;
   }
 
-  // Convert radians to servo ticks using configured zero position
   int zero_pos = zero_positions_[servo_idx];
-  double angle_ticks = (radians / (2.0 * M_PI)) * 4096.0;  // Convert to ticks
+  double angle_ticks = (radians / (2.0 * M_PI)) * 4096.0;
 
-  // Apply servo direction multiplier (especially important for wheels)
   angle_ticks *= servo_directions_[servo_idx];
 
   return zero_pos + static_cast<int>(angle_ticks);
@@ -401,17 +374,15 @@ int LeKiwiInterface::radians_to_ticks(double radians, size_t servo_idx)
 void LeKiwiInterface::record_current_position()
 {
   std::stringstream ss;
-  ss << "{";  // Start with just a curly brace
+  ss << "{";
 
-  bool first = true;  // To handle commas between entries
+  bool first = true;
   for (size_t i = 0; i < info_.joints.size(); ++i)
   {
     uint8_t servo_id = static_cast<uint8_t>(i + 1);
 
-    // Add delay between reads
     std::this_thread::sleep_for(std::chrono::milliseconds(10));
 
-    // Try multiple times to read the servo
     int pos = -1;
     for (int retry = 0; retry < 3 && pos == -1; retry++)
     {
@@ -434,7 +405,7 @@ void LeKiwiInterface::record_current_position()
        << "\"speed\": " << st3215_.ReadSpeed(servo_id) << ","
        << "\"load\": " << st3215_.ReadLoad(servo_id) << "}";
   }
-  ss << "}";  // Close the JSON object
+  ss << "}";
 
   last_calibration_data_ = ss.str();
   RCLCPP_INFO(rclcpp::get_logger("LeKiwiInterface"), "Recorded positions: %s", last_calibration_data_.c_str());
@@ -452,42 +423,32 @@ void LeKiwiInterface::set_torque_enable(bool enable)
 {
   if (use_serial_)
   {
-    // First set all servos
     for (size_t i = 0; i < info_.joints.size(); ++i)
     {
       uint8_t servo_id = static_cast<uint8_t>(i + 1);
 
       if (!enable)
       {
-        // When disabling:
-        // 1. Set to idle mode first
-        st3215_.Mode(servo_id, 2);  // Mode 2 = idle
+        st3215_.Mode(servo_id, 2);
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
 
-        // 2. Disable torque
         st3215_.EnableTorque(servo_id, 0);
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
 
-        // 3. Double check it's disabled
         st3215_.EnableTorque(servo_id, 0);
       }
       else
       {
-        // When enabling:
-        // 1. Set position mode
-        st3215_.Mode(servo_id, 0);  // Mode 0 = position
+        st3215_.Mode(servo_id, 0);
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
 
-        // 2. Enable torque
         st3215_.EnableTorque(servo_id, 1);
       }
       std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
 
-    // Wait a bit to ensure commands are processed
     std::this_thread::sleep_for(std::chrono::milliseconds(50));
 
-    // Update state after all servos are set
     torque_enabled_ = enable;
 
     RCLCPP_INFO(rclcpp::get_logger("LeKiwiInterface"), "Torque %s for all servos", enable ? "enabled" : "disabled");
@@ -499,11 +460,9 @@ void LeKiwiInterface::torque_callback(const std::shared_ptr<std_srvs::srv::Trigg
 {
   bool new_state = !torque_enabled_;
 
-  // Set response before changing state
   response->success = true;
   response->message = std::string("Torque ") + (new_state ? "enabled" : "disabled");
 
-  // Change state after setting response
   set_torque_enable(new_state);
 
   RCLCPP_INFO(rclcpp::get_logger("LeKiwiInterface"), "Torque service called, response: %s", response->message.c_str());
@@ -578,10 +537,8 @@ bool LeKiwiInterface::load_joint_offsets(const std::string& filepath)
 
     auto joint_offsets = config["joint_offsets"];
 
-    // Get base zero position
     int zero_base = joint_offsets["zero_position_base"] ? joint_offsets["zero_position_base"].as<int>() : 2048;
 
-    // Load joint-specific offsets for ARM joints and WHEEL joints
     std::vector<std::string> joint_names = { "shoulder_rotation", "shoulder_pitch",   "elbow",
                                              "wrist_pitch",       "wrist_roll",       "gripper",
                                              "left_wheel_drive",  "rear_wheel_drive", "right_wheel_drive" };
@@ -590,7 +547,7 @@ bool LeKiwiInterface::load_joint_offsets(const std::string& filepath)
     {
       JointOffsetConfig config_entry;
       config_entry.zero_position_base = zero_base;
-      config_entry.angle_offset_deg = 0.0;  // Default
+      config_entry.angle_offset_deg = 0.0;
 
       if (joint_offsets[joint_name] && joint_offsets[joint_name]["angle_offset_deg"])
       {
@@ -614,8 +571,6 @@ bool LeKiwiInterface::load_joint_offsets(const std::string& filepath)
 
 void LeKiwiInterface::calculate_zero_positions()
 {
-  // Joint names in order they appear in the servo array (Motor IDs 1-9)
-  // ARM joints: 1-6, WHEEL joints: 7-9
   std::vector<std::string> joint_names = { "shoulder_rotation", "shoulder_pitch",   "elbow",
                                            "wrist_pitch",       "wrist_roll",       "gripper",
                                            "left_wheel_drive",  "rear_wheel_drive", "right_wheel_drive" };
@@ -625,12 +580,11 @@ void LeKiwiInterface::calculate_zero_positions()
 
   for (const auto& joint_name : joint_names)
   {
-    int zero_pos = 2048;  // Default center position
+    int zero_pos = 2048;
 
     if (joint_offset_config_.find(joint_name) != joint_offset_config_.end())
     {
       const auto& config = joint_offset_config_[joint_name];
-      // Convert degrees to ticks: 4096 ticks = 360 degrees
       int offset_ticks = static_cast<int>(config.angle_offset_deg / 360.0 * 4096);
       zero_pos = config.zero_position_base + offset_ticks;
 

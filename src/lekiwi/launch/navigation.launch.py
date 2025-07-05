@@ -10,11 +10,8 @@ from nav2_common.launch import RewrittenYaml
 
 
 def generate_launch_description():
-    # Get the launch directory
     pkg_dir = os.path.dirname(os.path.realpath(__file__))
     pkg_dir = os.path.dirname(pkg_dir)
-
-    # Launch arguments
     use_sim_time_arg = DeclareLaunchArgument(
         'use_sim_time',
         default_value='false',
@@ -39,13 +36,11 @@ def generate_launch_description():
         description='Start Nav2 navigation stack'
     )
 
-    # Launch configurations
     use_sim_time = LaunchConfiguration('use_sim_time')
     autostart = LaunchConfiguration('autostart')
     nav2_params_file = LaunchConfiguration('nav2_params_file')
     start_nav2 = LaunchConfiguration('start_nav2')
 
-    # Nav2 parameter substitutions
     param_substitutions = {
         'use_sim_time': use_sim_time,
         'autostart': autostart
@@ -57,10 +52,8 @@ def generate_launch_description():
         convert_types=True
     )
 
-    # Nav2 lifecycle nodes
     nav2_lifecycle_nodes = ['controller_server', 'planner_server', 'behavior_server', 'bt_navigator']
 
-    # Nav2 Controller Server
     nav2_controller_server = Node(
         condition=IfCondition(start_nav2),
         package='nav2_controller',
@@ -70,7 +63,6 @@ def generate_launch_description():
         remappings=[('/tf', 'tf'), ('/tf_static', 'tf_static')]
     )
 
-    # Nav2 Planner Server
     nav2_planner_server = Node(
         condition=IfCondition(start_nav2),
         package='nav2_planner',
@@ -81,7 +73,6 @@ def generate_launch_description():
         remappings=[('/tf', 'tf'), ('/tf_static', 'tf_static')]
     )
 
-    # Nav2 Behavior Server
     nav2_behavior_server = Node(
         condition=IfCondition(start_nav2),
         package='nav2_behaviors',
@@ -92,7 +83,6 @@ def generate_launch_description():
         remappings=[('/tf', 'tf'), ('/tf_static', 'tf_static')]
     )
 
-    # Nav2 BT Navigator
     nav2_bt_navigator = Node(
         condition=IfCondition(start_nav2),
         package='nav2_bt_navigator',
@@ -103,7 +93,6 @@ def generate_launch_description():
         remappings=[('/tf', 'tf'), ('/tf_static', 'tf_static')]
     )
 
-    # Nav2 Lifecycle Manager
     nav2_lifecycle_manager = Node(
         condition=IfCondition(start_nav2),
         package='nav2_lifecycle_manager',
@@ -118,13 +107,10 @@ def generate_launch_description():
     )
 
     return LaunchDescription([
-        # Launch arguments
         use_sim_time_arg,
         autostart_arg,
         nav2_params_file_arg,
         start_nav2_arg,
-
-        # Nav2 nodes
         nav2_controller_server,
         nav2_planner_server,
         nav2_behavior_server,

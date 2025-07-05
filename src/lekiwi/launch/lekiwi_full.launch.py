@@ -11,7 +11,6 @@ from launch.launch_description_sources import PythonLaunchDescriptionSource
 
 
 def generate_launch_description():
-    # Launch arguments
     use_sim_time_arg = DeclareLaunchArgument(
         'use_sim_time',
         default_value='false',
@@ -72,7 +71,6 @@ def generate_launch_description():
         description='Start camera video feeds'
     )
 
-    # Launch configurations
     use_sim_time = LaunchConfiguration('use_sim_time')
     use_fake_hardware = LaunchConfiguration('use_fake_hardware')
     autostart = LaunchConfiguration('autostart')
@@ -84,11 +82,6 @@ def generate_launch_description():
     zero_pose = LaunchConfiguration('zero_pose')
     start_cameras = LaunchConfiguration('start_cameras')
 
-    # ===================
-    # MODULAR LAUNCH INCLUDES
-    # ===================
-
-    # Robot Hardware
     robot_hardware_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([
             PathJoinSubstitution([FindPackageShare('lekiwi'), 'launch', 'robot_hardware.launch.py'])
@@ -99,7 +92,6 @@ def generate_launch_description():
         }.items(),
     )
 
-    # Navigation Stack
     navigation_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([
             PathJoinSubstitution([FindPackageShare('lekiwi'), 'launch', 'navigation.launch.py'])
@@ -113,7 +105,6 @@ def generate_launch_description():
         condition=IfCondition(start_nav2),
     )
 
-    # Motion Planning
     motion_planning_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([
             PathJoinSubstitution([FindPackageShare('lekiwi'), 'launch', 'motion_planning.launch.py'])
@@ -126,7 +117,6 @@ def generate_launch_description():
         condition=IfCondition(start_moveit),
     )
 
-    # Cameras
     cameras_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([
             PathJoinSubstitution([FindPackageShare('lekiwi'), 'launch', 'cameras.launch.py'])
@@ -138,7 +128,6 @@ def generate_launch_description():
         condition=IfCondition(start_cameras),
     )
 
-    # Visualization
     visualization_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([
             PathJoinSubstitution([FindPackageShare('lekiwi'), 'launch', 'visualization.launch.py'])
@@ -149,12 +138,7 @@ def generate_launch_description():
         condition=IfCondition(use_rviz),
     )
 
-    # ===================
-    # LAUNCH DESCRIPTION
-    # ===================
-
     return LaunchDescription([
-        # Launch arguments
         use_sim_time_arg,
         use_fake_hardware_arg,
         autostart_arg,
@@ -165,8 +149,6 @@ def generate_launch_description():
         start_moveit_arg,
         zero_pose_arg,
         start_cameras_arg,
-
-        # Modular launch includes
         robot_hardware_launch,
         navigation_launch,
         motion_planning_launch,
